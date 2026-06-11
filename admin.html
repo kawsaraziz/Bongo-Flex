@@ -3,655 +3,1123 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Admin — Bongo Flex</title>
+<title>Admin Panel — Bongo Flex</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0d0d12;--s1:#13131a;--s2:#1a1a24;--s3:#22222e;
-  --border:#2e2e3e;--red:#e50914;--red2:#c8000f;
-  --text:#eeeef5;--t2:#8888a8;--t3:#44445a;
-  --green:#22c55e;--gold:#ffd700;
+  --bg:#080810;--s1:#0f0f1a;--s2:#161623;--s3:#1e1e2e;--s4:#252535;
+  --border:#2a2a40;--border2:#333350;
+  --red:#e50914;--red2:#ff1c27;--red-dim:rgba(229,9,20,.12);
+  --text:#f0f0f8;--t2:#9898b8;--t3:#55556a;--t4:#333345;
+  --green:#22c55e;--green-dim:rgba(34,197,94,.12);
+  --gold:#ffd700;--gold-dim:rgba(255,215,0,.12);
+  --blue:#3b82f6;--blue-dim:rgba(59,130,246,.12);
+  --purple:#a855f7;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --radius:10px;--radius-sm:7px;
+  --shadow:0 8px 32px rgba(0,0,0,.6);
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+html{font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;color:inherit;font-family:var(--font)}
+input,select,textarea{font-family:var(--font)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--s1)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--red)}
 
-/* LOGIN */
+/* ─── LOGIN PAGE ─── */
 #pg-login{
   position:fixed;inset:0;z-index:9999;
-  background:radial-gradient(ellipse at 50% 0%,rgba(229,9,20,.18) 0%,transparent 60%),var(--bg);
   display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(229,9,20,.2) 0%,transparent 70%),var(--bg);
 }
 .login-card{
   background:var(--s1);border:1px solid var(--border);border-radius:18px;
-  padding:40px 34px;width:100%;max-width:400px;
-  box-shadow:0 32px 80px rgba(0,0,0,.8);
+  padding:44px 38px;width:100%;max-width:420px;
+  box-shadow:0 40px 100px rgba(0,0,0,.85),0 0 0 1px rgba(229,9,20,.08);
 }
-.lg-logo{font-size:2.2rem;font-weight:900;color:var(--red);letter-spacing:-1px;text-align:center}
-.lg-logo span{color:var(--text)}
-.lg-sub{text-align:center;color:var(--t2);font-size:.82rem;margin:5px 0 28px}
-.f-lbl{display:block;font-size:.8rem;font-weight:600;color:var(--t2);margin-bottom:6px;margin-top:14px}
+.lg-logo{text-align:center;margin-bottom:6px}
+.lg-logo-icon{
+  display:inline-flex;align-items:center;gap:12px;
+  font-size:1.8rem;font-weight:900;letter-spacing:-1px;
+}
+.lg-logo-icon .badge{
+  width:42px;height:42px;background:var(--red);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:800;letter-spacing:.5px;
+}
+.lg-logo-icon .text span{color:var(--red)}
+.lg-sub{text-align:center;color:var(--t2);font-size:.82rem;margin-bottom:30px}
+.lg-sub strong{color:var(--text)}
+.f-group{margin-bottom:16px}
+.f-lbl{display:block;font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:7px}
 .f-wrap{position:relative}
-.inp{width:100%;background:var(--s2);border:1.5px solid var(--border);border-radius:9px;
-  padding:12px 14px;color:var(--text);font-size:.95rem;outline:none;transition:.2s}
-.inp:focus{border-color:var(--red)}
+.f-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none}
+.inp{
+  width:100%;background:var(--s2);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 14px 12px 38px;color:var(--text);font-size:.92rem;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.inp:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
 .inp.shake{animation:shake .35s;border-color:#ef4444}
-.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:var(--t2);cursor:pointer;font-size:1rem}
-.lg-btn{width:100%;margin-top:20px;padding:13px;background:var(--red);color:#fff;
-  border:none;border-radius:9px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
-.lg-btn:hover{background:var(--red2)}
-.lg-btn:disabled{opacity:.4;cursor:not-allowed}
-.lg-err{color:#ef4444;font-size:.8rem;margin-top:10px;text-align:center;min-height:20px}
-.lg-lock{color:var(--gold);font-size:.8rem;margin-top:6px;text-align:center;display:none}
-.lg-hint{margin-top:18px;padding:12px;background:var(--s2);border:1px solid var(--border);
-  border-radius:8px;font-size:.77rem;color:var(--t2);text-align:center;line-height:1.8}
-.lg-hint strong{color:var(--text)}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--t2);cursor:pointer;font-size:.95rem;padding:4px}
+.eye-btn:hover{color:var(--text)}
+.lg-btn{
+  width:100%;margin-top:8px;padding:13px;
+  background:linear-gradient(135deg,var(--red),var(--red2));
+  color:#fff;border:none;border-radius:var(--radius-sm);
+  font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:opacity .2s,transform .15s;
+  letter-spacing:.3px;
+}
+.lg-btn:hover{opacity:.92;transform:translateY(-1px)}
+.lg-btn:active{transform:translateY(0)}
+.lg-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.lg-err{color:#ef4444;font-size:.78rem;margin-top:10px;text-align:center;min-height:18px}
+.lg-lock-bar{color:var(--gold);font-size:.78rem;margin-top:6px;text-align:center;display:none}
+.lg-cred-hint{
+  margin-top:22px;padding:13px 16px;
+  background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:.77rem;color:var(--t2);text-align:center;line-height:1.9;
+}
+.lg-cred-hint strong{color:var(--text);background:var(--s3);padding:1px 7px;border-radius:4px}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 
-/* ADMIN */
-#pg-admin{display:none !important;flex-direction:column;min-height:100vh}
+/* ─── ADMIN SHELL ─── */
+#pg-admin{display:none;flex-direction:column;min-height:100vh}
 
-.topbar{background:var(--s1);border-bottom:1px solid var(--border);
-  height:52px;padding:0 18px;display:flex;align-items:center;gap:12px;
-  position:sticky;top:0;z-index:100;flex-shrink:0}
-.tb-logo{font-size:1.2rem;font-weight:800;color:var(--red)}
-.tb-logo span{color:var(--text)}
-.tb-pill{background:rgba(229,9,20,.15);border:1px solid rgba(229,9,20,.3);
-  color:var(--red);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase}
-.tb-r{margin-left:auto;display:flex;align-items:center;gap:8px}
-.tb-btn{padding:6px 12px;border-radius:7px;font-size:.78rem;font-weight:600;
-  cursor:pointer;border:1.5px solid var(--border);background:var(--s2);color:var(--text);transition:.2s}
-.tb-btn:hover{border-color:var(--t2)}
-.tb-btn.red:hover{border-color:#ef4444;color:#ef4444}
-.tb-user{font-size:.78rem;color:var(--t2)}
+/* Topbar */
+.topbar{
+  background:var(--s1);border-bottom:1px solid var(--border);
+  height:56px;padding:0 20px;
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:100;flex-shrink:0;
+}
+.tb-logo{display:flex;align-items:center;gap:9px}
+.tb-logo-icon{width:32px;height:32px;background:var(--red);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800}
+.tb-logo-text{font-size:1.05rem;font-weight:800;letter-spacing:-.3px}
+.tb-logo-text span{color:var(--red)}
+.tb-admin-badge{
+  background:var(--red-dim);border:1px solid rgba(229,9,20,.3);
+  color:var(--red);font-size:.6rem;font-weight:700;
+  padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;
+}
+.tb-spacer{flex:1}
+.tb-actions{display:flex;align-items:center;gap:8px}
+.tb-user{font-size:.78rem;color:var(--t2);padding:0 4px}
+.tb-user strong{color:var(--text)}
+.tb-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:7px 13px;border-radius:var(--radius-sm);
+  font-size:.78rem;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--border);background:var(--s2);color:var(--text);
+  transition:all .15s;white-space:nowrap;
+}
+.tb-btn:hover{background:var(--s3);border-color:var(--border2)}
+.tb-btn.danger:hover{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,.08)}
+.tb-btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.tb-btn.primary:hover{background:var(--red2);border-color:var(--red2)}
 
-.a-body{display:flex;flex:1;height:calc(100vh - 52px);overflow:hidden}
+/* Body layout */
+.admin-body{display:flex;height:calc(100vh - 56px);overflow:hidden}
 
-/* SIDEBAR */
-.sidebar{width:275px;background:var(--s1);border-right:1px solid var(--border);
-  overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
-.sb-sec{padding:14px 14px;border-bottom:1px solid var(--border)}
-.sb-title{font-size:.62rem;font-weight:700;color:var(--t3);
-  text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.s-inp{width:100%;background:var(--s2);border:1.5px solid var(--border);
-  border-radius:8px;padding:9px 10px;color:var(--text);font-size:.83rem;
-  outline:none;transition:.2s;margin-bottom:8px}
-.s-inp:focus{border-color:var(--red)}
-.s-sel{width:100%;background:var(--s2);border:1.5px solid var(--border);
-  border-radius:8px;padding:9px 10px;color:var(--text);font-size:.83rem;
-  outline:none;cursor:pointer;margin-bottom:8px}
-.logo-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-.logo-box{width:44px;height:44px;border-radius:7px;background:var(--s2);
-  border:1.5px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo-box img{width:100%;height:100%;object-fit:contain}
-.sw-row{display:flex;align-items:center;justify-content:space-between;
-  background:var(--s2);border:1.5px solid var(--border);border-radius:8px;
-  padding:8px 10px;margin-bottom:8px}
-.sw-lbl{font-size:.82rem;color:var(--t2)}
-.sw-lbl small{display:block;font-size:.7rem;color:var(--t3)}
-.sw{position:relative;width:40px;height:21px;flex-shrink:0}
-.sw input{opacity:0;width:0;height:0;position:absolute}
-.sw-sl{position:absolute;inset:0;background:var(--s3);border-radius:21px;transition:.25s;cursor:pointer}
-.sw-sl:before{content:"";position:absolute;width:15px;height:15px;left:3px;bottom:3px;
-  background:#fff;border-radius:50%;transition:.25s}
-.sw input:checked+.sw-sl{background:var(--gold)}
-.sw input:checked+.sw-sl:before{transform:translateX(19px)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;
-  padding:8px 12px;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:.2s}
-.btn-r{background:var(--red);color:#fff}
-.btn-r:hover{background:var(--red2)}
-.btn-g{background:var(--s2);color:var(--text);border:1.5px solid var(--border)}
-.btn-g:hover{border-color:var(--t2)}
-.btn-go{background:rgba(34,197,94,.1);color:var(--green);border:1.5px solid rgba(34,197,94,.3)}
-.btn-go:hover{background:rgba(34,197,94,.2)}
-.btn-ro{background:rgba(239,68,68,.1);color:#ef4444;border:1.5px solid rgba(239,68,68,.2)}
-.btn-ro:hover{background:rgba(239,68,68,.2)}
-.btn-row{display:flex;gap:6px}
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:300px;background:var(--s1);border-right:1px solid var(--border);
+  overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;gap:0;
+}
+.sb-section{padding:16px;border-bottom:1px solid var(--border)}
+.sb-header{
+  font-size:.65rem;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;
+}
+/* Form elements */
+.form-group{margin-bottom:10px}
+.form-label{font-size:.75rem;font-weight:600;color:var(--t2);display:block;margin-bottom:5px}
+.form-input{
+  width:100%;background:var(--s2);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:9px 11px;color:var(--text);font-size:.84rem;
+  outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.form-input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
+.form-input::placeholder{color:var(--t3)}
+.form-select{
+  width:100%;background:var(--s2);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:9px 11px;color:var(--text);font-size:.84rem;
+  outline:none;cursor:pointer;transition:border-color .15s;
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239898b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;
+}
+.form-select:focus{border-color:var(--red)}
+.logo-preview-row{display:flex;gap:8px;align-items:center}
+.logo-preview-box{
+  width:46px;height:46px;border-radius:8px;background:var(--s2);
+  border:1.5px solid var(--border);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.logo-preview-box img{width:100%;height:100%;object-fit:contain}
+/* Toggle switch */
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--s2);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:9px 11px;margin-bottom:10px;
+}
+.toggle-label{font-size:.82rem;color:var(--text)}
+.toggle-label small{display:block;font-size:.7rem;color:var(--t3);margin-top:1px}
+.toggle{position:relative;width:42px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{
+  position:absolute;inset:0;background:var(--s3);border-radius:22px;
+  cursor:pointer;transition:.25s;border:1px solid var(--border2);
+}
+.toggle-track::before{
+  content:'';position:absolute;width:16px;height:16px;
+  left:3px;bottom:2px;background:#fff;border-radius:50%;transition:.25s;
+}
+.toggle input:checked+.toggle-track{background:var(--gold);border-color:var(--gold)}
+.toggle input:checked+.toggle-track::before{transform:translateX(20px)}
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:9px 14px;border-radius:var(--radius-sm);
+  font-size:.82rem;font-weight:600;cursor:pointer;border:none;
+  transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:var(--red2)}
+.btn-secondary{background:var(--s2);color:var(--text);border:1.5px solid var(--border)}
+.btn-secondary:hover{background:var(--s3);border-color:var(--border2)}
+.btn-success{background:var(--green-dim);color:var(--green);border:1.5px solid rgba(34,197,94,.3)}
+.btn-success:hover{background:rgba(34,197,94,.2)}
+.btn-danger{background:rgba(239,68,68,.1);color:#ef4444;border:1.5px solid rgba(239,68,68,.25)}
+.btn-danger:hover{background:rgba(239,68,68,.2)}
+.btn-gold{background:var(--gold-dim);color:var(--gold);border:1.5px solid rgba(255,215,0,.3)}
+.btn-gold:hover{background:rgba(255,215,0,.2)}
 .btn-full{width:100%}
-.btn-sm{padding:6px 10px;font-size:.77rem}
+.btn-sm{padding:6px 11px;font-size:.77rem}
+.btn-row{display:flex;gap:7px}
 
-/* MAIN */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.stats{display:flex;gap:1px;background:var(--border);border-bottom:1px solid var(--border);flex-shrink:0}
-.stat{flex:1;padding:9px;background:var(--s1);text-align:center}
-.stat-n{font-size:1.3rem;font-weight:800}
-.stat-l{font-size:.65rem;color:var(--t2);margin-top:1px}
-.toolbar{padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
-  background:var(--s1);border-bottom:1px solid var(--border);flex-shrink:0}
-.srch-wrap{position:relative;flex:1;min-width:140px}
-.srch-wrap::before{content:"🔍";position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:.78rem}
-.srch-wrap input{width:100%;background:var(--s2);border:1.5px solid var(--border);
-  border-radius:8px;padding:7px 10px 7px 30px;color:var(--text);font-size:.83rem;outline:none;transition:.2s}
-.srch-wrap input:focus{border-color:var(--red)}
-.flts{display:flex;gap:5px;flex-wrap:wrap}
-.flt{padding:5px 11px;border-radius:7px;font-size:.76rem;cursor:pointer;
-  border:1.5px solid var(--border);background:var(--s2);color:var(--t2);transition:.2s}
-.flt.on{background:var(--red);color:#fff;border-color:var(--red)}
-.ch-list{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:5px}
-.ch-card{background:var(--s1);border:1.5px solid var(--border);border-radius:10px;
-  padding:9px 12px;display:flex;align-items:center;gap:10px;transition:.15s}
-.ch-card:hover{background:var(--s2)}
-.ch-card.sel{background:rgba(229,9,20,.07);border-color:var(--red)}
-.ch-card.hl{border-color:var(--gold)}
-.ch-n{font-size:.7rem;color:var(--t3);width:24px;text-align:right;flex-shrink:0}
-.ch-logo{width:36px;height:36px;border-radius:6px;background:var(--s2);
+/* ─── MAIN PANEL ─── */
+.main-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Stats bar */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.stat-cell{
+  padding:10px 16px;background:var(--s1);text-align:center;
+}
+.stat-num{font-size:1.35rem;font-weight:800;line-height:1}
+.stat-lbl{font-size:.65rem;color:var(--t2);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+/* Toolbar */
+.toolbar{
+  padding:10px 14px;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+  background:var(--s1);border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.search-wrap{flex:1;min-width:160px;position:relative}
+.search-wrap::before{
+  content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  font-size:.8rem;pointer-events:none;
+}
+.search-input{
+  width:100%;background:var(--s2);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:8px 10px 8px 32px;
+  color:var(--text);font-size:.83rem;outline:none;transition:.15s;
+}
+.search-input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
+.filter-chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{
+  padding:5px 12px;border-radius:20px;font-size:.75rem;cursor:pointer;
+  border:1.5px solid var(--border);background:var(--s2);color:var(--t2);transition:.15s;
+}
+.chip:hover{border-color:var(--t2);color:var(--text)}
+.chip.active{background:var(--red);color:#fff;border-color:var(--red)}
+.chip.gold.active{background:var(--gold);color:#000;border-color:var(--gold)}
+
+/* Channel list */
+.ch-list{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.ch-item{
+  background:var(--s1);border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:10px 12px;display:flex;align-items:center;gap:10px;
+  transition:all .15s;cursor:default;
+}
+.ch-item:hover{background:var(--s2);border-color:var(--border2)}
+.ch-item.editing{background:var(--red-dim);border-color:rgba(229,9,20,.5)}
+.ch-item.fifa-hl{border-color:rgba(255,215,0,.4)}
+.ch-num{font-size:.7rem;color:var(--t3);width:24px;text-align:right;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ch-logo-box{width:38px;height:38px;border-radius:7px;background:var(--s2);
   overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ch-logo img{width:100%;height:100%;object-fit:contain}
+.ch-logo-box img{width:100%;height:100%;object-fit:contain}
 .ch-info{flex:1;min-width:0}
-.ch-nm{font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ch-meta{display:flex;gap:5px;margin-top:2px;flex-wrap:wrap}
-.cpill{font-size:.66rem;font-weight:600;padding:1px 7px;border-radius:20px;
+.ch-name{font-size:.87rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-tags{display:flex;gap:5px;margin-top:3px;flex-wrap:wrap}
+.tag{font-size:.65rem;font-weight:600;padding:1px 8px;border-radius:20px;
   background:var(--s3);border:1px solid var(--border);color:var(--t2)}
-.cpill.Sports{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:#60a5fa}
-.cpill.News{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:#c084fc}
-.cpill.Bangla{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#4ade80}
-.cpill.Entertainment{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:#fb923c}
-.fpill{font-size:.64rem;font-weight:700;padding:1px 7px;border-radius:20px;
-  background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--gold)}
-.ch-acts{display:flex;gap:4px;flex-shrink:0}
-.ic{width:28px;height:28px;border-radius:6px;background:var(--s2);
-  border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;
-  justify-content:center;font-size:.82rem;transition:.15s}
-.ic:hover{background:var(--s3);border-color:var(--t2)}
-.ic.del:hover{background:rgba(239,68,68,.15);border-color:#ef4444}
-.ic.hl-on{background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.4)}
-.empty{text-align:center;padding:50px 20px;color:var(--t3)}
+.tag.Sports{background:var(--blue-dim);border-color:rgba(59,130,246,.3);color:#93c5fd}
+.tag.News{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:#d8b4fe}
+.tag.Bangla{background:var(--green-dim);border-color:rgba(34,197,94,.3);color:#86efac}
+.tag.Entertainment{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3);color:#fdba74}
+.tag.Kids{background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:#f9a8d4}
+.tag.fifa-tag{background:var(--gold-dim);border-color:rgba(255,215,0,.4);color:var(--gold)}
+.ch-actions{display:flex;gap:5px;flex-shrink:0}
+.action-btn{
+  width:30px;height:30px;border-radius:var(--radius-sm);background:var(--s2);
+  border:1.5px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;
+  transition:.15s;
+}
+.action-btn:hover{background:var(--s3);border-color:var(--border2)}
+.action-btn.edit-btn:hover{background:var(--blue-dim);border-color:rgba(59,130,246,.4)}
+.action-btn.fifa-btn{background:var(--gold-dim);border-color:rgba(255,215,0,.3)}
+.action-btn.del-btn:hover{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4)}
+.empty-list{text-align:center;padding:60px 20px;color:var(--t3);font-size:.9rem}
+.empty-list .big{font-size:2.5rem;margin-bottom:12px}
 
-/* OVERLAY */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
-  display:none;align-items:center;justify-content:center;padding:20px}
-.ov.show{display:flex}
-.modal{background:var(--s1);border:1px solid var(--border);border-radius:14px;
-  width:100%;max-width:460px;max-height:90vh;display:flex;flex-direction:column}
-.modal.wide{max-width:640px}
-.mh{padding:14px 18px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between}
-.mh-t{font-size:.93rem;font-weight:700}
-.mc{background:none;border:none;color:var(--t2);font-size:1.3rem;cursor:pointer}
-.mb{padding:18px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px}
-.mf{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
-.m-lbl{font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:5px;display:block}
-.m-inp{width:100%;background:var(--s2);border:1.5px solid var(--border);
-  border-radius:8px;padding:9px 11px;color:var(--text);font-size:.87rem;outline:none;transition:.2s}
-.m-inp:focus{border-color:var(--red)}
-.code-box{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;
-  padding:12px;font-family:monospace;font-size:.73rem;color:var(--green);resize:none;height:200px;outline:none}
-.steps{list-style:none;counter-reset:s}
-.steps li{counter-increment:s;display:flex;gap:10px;font-size:.83rem;color:var(--t2);margin-bottom:9px}
-.steps li::before{content:counter(s);flex-shrink:0;width:21px;height:21px;background:var(--red);
-  color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700}
+/* ─── MODAL / OVERLAY ─── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:300;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(4px);
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--s1);border:1px solid var(--border);border-radius:16px;
+  width:100%;max-width:500px;max-height:90vh;
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow);
+}
+.modal.wide{max-width:680px}
+.modal-head{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.modal-title{font-size:.95rem;font-weight:700}
+.modal-close{width:28px;height:28px;border-radius:6px;background:var(--s2);
+  border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--t2)}
+.modal-close:hover{background:var(--s3);color:var(--text)}
+.modal-body{padding:20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
+.modal-foot{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;
+}
 
-/* TOAST */
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);
+/* Code box */
+.code-textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px;
+  font-family:'Courier New',monospace;font-size:.72rem;color:#22c55e;
+  resize:none;height:220px;outline:none;line-height:1.5;
+}
+.steps-list{counter-reset:step;list-style:none;display:flex;flex-direction:column;gap:10px}
+.steps-list li{
+  counter-increment:step;display:flex;gap:12px;
+  font-size:.84rem;color:var(--t2);line-height:1.5;align-items:flex-start;
+}
+.steps-list li::before{
+  content:counter(step);flex-shrink:0;
+  width:22px;height:22px;background:var(--red);color:#fff;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;margin-top:1px;
+}
+.steps-list li strong{color:var(--text)}
+.steps-list li code{background:var(--s2);padding:1px 6px;border-radius:4px;color:var(--gold);font-size:.78rem}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);
   background:var(--s2);border:1px solid var(--border);color:var(--text);
-  font-size:.83rem;font-weight:600;padding:9px 18px;border-radius:9px;
-  z-index:999;transition:.3s;pointer-events:none}
+  font-size:.84rem;font-weight:600;padding:10px 20px;border-radius:10px;
+  z-index:9999;transition:.3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
 .toast.show{transform:translateX(-50%) translateY(0)}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
-@media(max-width:720px){
-  .a-body{flex-direction:column;height:auto;overflow:visible}
-  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border)}
-  .main{overflow:visible}
-  .ch-list{max-height:55vh}
+.toast.success{border-color:rgba(34,197,94,.4);color:var(--green)}
+.toast.error{border-color:rgba(239,68,68,.4);color:#ef4444}
+.toast.info{border-color:rgba(255,215,0,.4);color:var(--gold)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .topbar{padding:0 12px}
+  .tb-user,.tb-btn span{display:none}
+  .admin-body{flex-direction:column;height:auto;overflow:visible}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);max-height:none}
+  .main-panel{overflow:visible}
+  .ch-list{max-height:60vh}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="pg-login" style="display:flex">
+<!-- ══════════ LOGIN ══════════ -->
+<div id="pg-login">
   <div class="login-card">
-    <div class="lg-logo">Bongo<span>Flex</span></div>
-    <div class="lg-sub">Admin Panel — শুধুমাত্র অ্যাডমিনের জন্য</div>
+    <div class="lg-logo">
+      <div class="lg-logo-icon">
+        <div class="badge">BF</div>
+        <div class="text">Bongo<span>Flex</span></div>
+      </div>
+    </div>
+    <div class="lg-sub">Admin Panel &mdash; <strong>শুধুমাত্র অ্যাডমিনের জন্য</strong></div>
 
-    <label class="f-lbl">👤 ইউজারনেম</label>
-    <input class="inp" id="lu" type="text" placeholder="admin" autocomplete="username"
-      onkeydown="if(event.key==='Enter')document.getElementById('lp').focus()"/>
+    <div class="f-group">
+      <label class="f-lbl">👤 ইউজারনেম</label>
+      <div class="f-wrap">
+        <span class="f-icon">👤</span>
+        <input class="inp" id="lu" type="text" placeholder="admin" autocomplete="username"
+          onkeydown="if(event.key==='Enter')document.getElementById('lp').focus()"/>
+      </div>
+    </div>
 
-    <label class="f-lbl">🔒 পাসওয়ার্ড</label>
-    <div class="f-wrap">
-      <input class="inp" id="lp" type="password" placeholder="••••••••" autocomplete="current-password"
-        onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:42px"/>
-      <button class="eye" onclick="toggleEye(this)">👁️</button>
+    <div class="f-group">
+      <label class="f-lbl">🔒 পাসওয়ার্ড</label>
+      <div class="f-wrap">
+        <span class="f-icon">🔒</span>
+        <input class="inp" id="lp" type="password" placeholder="••••••••" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:44px"/>
+        <button class="eye-btn" id="eye-btn" onclick="toggleEye()">👁️</button>
+      </div>
     </div>
 
     <button class="lg-btn" id="lg-btn" onclick="doLogin()">🔓 লগইন করুন</button>
     <div class="lg-err" id="lg-err"></div>
-    <div class="lg-lock" id="lg-lock"></div>
+    <div class="lg-lock-bar" id="lg-lock"></div>
 
-    <div class="lg-hint">
-      Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>bongoflex2026</strong><br/>
-      <small style="color:var(--t3)">লগইনের পরে পাসওয়ার্ড বদলাতে পারবেন</small>
+    <div class="lg-cred-hint">
+      Username: <strong>admin</strong> &nbsp;&bull;&nbsp; Password: <strong>bongoflex2026</strong><br/>
+      <span style="font-size:.7rem;color:var(--t3)">লগইনের পরে পাসওয়ার্ড পরিবর্তন করুন</span>
     </div>
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="pg-admin" style="display:none">
-  <div class="topbar">
-    <div class="tb-logo">Bongo<span>Flex</span></div>
-    <div class="tb-pill">Admin</div>
-    <div class="tb-r">
+<!-- ══════════ ADMIN PANEL ══════════ -->
+<div id="pg-admin">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="tb-logo">
+      <div class="tb-logo-icon">BF</div>
+      <span class="tb-logo-text">Bongo<span>Flex</span></span>
+      <span class="tb-admin-badge">Admin</span>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-actions">
       <span class="tb-user" id="tb-user"></span>
-      <button class="tb-btn" onclick="showOv('ov-pw')">🔑 পাসওয়ার্ড</button>
-      <button class="tb-btn" onclick="doExport()">📤 Export</button>
-      <button class="tb-btn red" onclick="doLogout()">🚪 Logout</button>
+      <button class="tb-btn" onclick="openModal('ov-pw')">🔑 <span>পাসওয়ার্ড</span></button>
+      <button class="tb-btn" onclick="openSiteSettings()">⚙️ <span>সাইট সেটিংস</span></button>
+      <button class="tb-btn primary" onclick="doExport()">📤 <span>Export</span></button>
+      <button class="tb-btn danger" onclick="doLogout()">🚪 <span>Logout</span></button>
+    </div>
+  </header>
+
+  <div class="admin-body">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+
+      <!-- Add/Edit Channel Form -->
+      <div class="sb-section">
+        <div class="sb-header" id="form-header">➕ নতুন চ্যানেল যোগ করুন</div>
+
+        <div class="form-group">
+          <label class="form-label">চ্যানেলের নাম *</label>
+          <input class="form-input" id="f-name" placeholder="যেমন: T Sports HD"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">ক্যাটাগরি *</label>
+          <select class="form-select" id="f-cat">
+            <option>Bangla</option><option>Documentary</option><option>English</option>
+            <option>Entertainment</option><option>Hindi</option><option>Hindi Movies</option>
+            <option>Infotainment</option><option>Kids</option><option>Latest</option>
+            <option>Movies</option><option>Music</option><option>News</option>
+            <option>Religious</option><option selected>Sports</option>
+            <option>Unknown</option><option>Weather</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Stream URL * (.m3u8)</label>
+          <input class="form-input" id="f-url" placeholder="https://...index.m3u8"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">লোগো URL (ঐচ্ছিক)</label>
+          <div class="logo-preview-row">
+            <input class="form-input" id="f-logo" placeholder="https://..."
+              oninput="document.getElementById('logo-prev').src=this.value||''" style="margin:0;flex:1"/>
+            <div class="logo-preview-box">
+              <img id="logo-prev" src="" onerror="this.src='https://img.icons8.com/color/96/tv.png'" alt=""/>
+            </div>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-label">⚽ FIFA 2026 হাইলাইট<small>সোনালি বর্ডার ও ব্যাজ দেখাবে</small></div>
+          <label class="toggle"><input type="checkbox" id="f-fifa"/><div class="toggle-track"></div></label>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary btn-full" id="f-submit" onclick="submitForm()">➕ চ্যানেল যোগ করুন</button>
+          <button class="btn btn-secondary btn-sm" id="f-cancel" style="display:none" onclick="resetForm()">✕</button>
+        </div>
+      </div>
+
+      <!-- FIFA Banner Text Editor -->
+      <div class="sb-section">
+        <div class="sb-header">✏️ FIFA ব্যানার টেক্সট এডিট</div>
+        <div class="form-group">
+          <label class="form-label">ব্যানার শিরোনাম</label>
+          <input class="form-input" id="fifa-title" value="FIFA World Cup 2026 — হাইলাইটেড চ্যানেল"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ব্যানার সাবটাইটেল</label>
+          <input class="form-input" id="fifa-subtitle" value="T Sports, BTV, Somoy News, Star News, Bein Sports"/>
+        </div>
+        <button class="btn btn-gold btn-full btn-sm" onclick="saveFifaBanner()">💾 ব্যানার সেভ করুন</button>
+      </div>
+
+      <!-- Bulk FIFA -->
+      <div class="sb-section">
+        <div class="sb-header">⚡ বাল্ক FIFA হাইলাইট</div>
+        <div class="form-group">
+          <label class="form-label">চ্যানেলের নাম (কমা দিয়ে আলাদা)</label>
+          <input class="form-input" id="bulk-names" placeholder="T Sports HD, BTV, Somoy..."/>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-success btn-full btn-sm" onclick="bulkFifa(true)">✅ চালু</button>
+          <button class="btn btn-danger btn-full btn-sm" onclick="bulkFifa(false)">❌ বন্ধ</button>
+        </div>
+      </div>
+
+      <!-- JSON Import -->
+      <div class="sb-section">
+        <div class="sb-header">📥 JSON Import</div>
+        <div class="form-group">
+          <textarea class="form-input" id="imp-area" rows="4"
+            placeholder='[{"name":"চ্যানেল নাম","cat":"Sports","url":"https://...m3u8"}]'
+            style="resize:vertical;height:80px;font-size:.76rem"></textarea>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <button class="btn btn-secondary btn-full btn-sm" onclick="doImport(false)">➕ বর্তমানে যোগ করুন</button>
+          <button class="btn btn-danger btn-full btn-sm" onclick="doImport(true)">🔄 সব বদলে ফেলুন</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── MAIN PANEL ── -->
+    <div class="main-panel">
+
+      <!-- Stats -->
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat-cell"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">মোট চ্যানেল</div></div>
+        <div class="stat-cell"><div class="stat-num" id="stat-fifa" style="color:var(--gold)">0</div><div class="stat-lbl">⚽ FIFA হাইলাইট</div></div>
+        <div class="stat-cell"><div class="stat-num" id="stat-cats" style="color:var(--blue)">0</div><div class="stat-lbl">ক্যাটাগরি</div></div>
+        <div class="stat-cell"><div class="stat-num" id="stat-showing" style="color:var(--green)">0</div><div class="stat-lbl">দেখানো হচ্ছে</div></div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input type="search" class="search-input" id="srch" placeholder="চ্যানেল বা ক্যাটাগরি খুঁজুন..." oninput="renderList()"/>
+        </div>
+        <div class="filter-chips">
+          <button class="chip active" onclick="setFilter('All',this)">সব</button>
+          <button class="chip" onclick="setFilter('Sports',this)">⚽ Sports</button>
+          <button class="chip" onclick="setFilter('News',this)">📰 News</button>
+          <button class="chip" onclick="setFilter('Bangla',this)">🇧🇩 Bangla</button>
+          <button class="chip" onclick="setFilter('Entertainment',this)">📺 Ent.</button>
+          <button class="chip gold" onclick="setFilter('FIFA',this)">⭐ FIFA</button>
+        </div>
+      </div>
+
+      <!-- Channel List -->
+      <div class="ch-list" id="ch-list"></div>
+
+    </div><!-- end main-panel -->
+  </div><!-- end admin-body -->
+</div><!-- end pg-admin -->
+
+<!-- ══ CHANGE PASSWORD MODAL ══ -->
+<div class="overlay" id="ov-pw">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">🔑 পাসওয়ার্ড পরিবর্তন</span>
+      <button class="modal-close" onclick="closeModal('ov-pw')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">বর্তমান পাসওয়ার্ড</label>
+        <input class="form-input" id="pw-old" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label>
+        <input class="form-input" id="pw-new" type="password" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+        <input class="form-input" id="pw-new2" type="password" placeholder="••••••••"/>
+      </div>
+      <div style="color:#ef4444;font-size:.78rem;min-height:16px" id="pw-err"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('ov-pw')">বাতিল</button>
+      <button class="btn btn-primary btn-sm" onclick="changePw()">💾 পরিবর্তন করুন</button>
     </div>
   </div>
+</div>
 
-  <div class="a-body">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="sb-sec">
-        <div class="sb-title" id="f-title">➕ নতুন চ্যানেল</div>
-        <label class="f-lbl" style="font-size:.76rem;color:var(--t2);display:block;margin-bottom:4px;margin-top:0">নাম *</label>
-        <input class="s-inp" id="f-name" placeholder="যেমন: T Sports HD"/>
-        <label class="f-lbl" style="font-size:.76rem;color:var(--t2);display:block;margin-bottom:4px;margin-top:0">ক্যাটাগরি *</label>
-        <select class="s-sel" id="f-cat">
+<!-- ══ SITE SETTINGS MODAL ══ -->
+<div class="overlay" id="ov-settings">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">⚙️ সাইট সেটিংস</span>
+      <button class="modal-close" onclick="closeModal('ov-settings')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">সাইটের শিরোনাম</label>
+        <input class="form-input" id="st-title" value="Bongo Flex — বাংলার লাইভ টিভি"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">সাবটাইটেল / ট্যাগলাইন</label>
+        <input class="form-input" id="st-tagline" value="বাংলার গল্প, তোমার পর্দায়"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Footer টেক্সট (Powered By...)</label>
+        <input class="form-input" id="st-footer" value="Powered By Kawsar Aziz"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">চ্যানেল কাউন্ট টেক্সট (Placeholder)</label>
+        <input class="form-input" id="st-count" value="১২০০+ লাইভ চ্যানেল HD তে দেখো যখন খুশি।"/>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:.78rem;color:var(--t2)">
+        💡 <strong style="color:var(--text)">নোট:</strong> এই সেটিংস Export করার সময় index.html এ প্রয়োগ করতে হবে।
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('ov-settings')">বাতিল</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSiteSettings()">💾 সেভ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXPORT MODAL ══ -->
+<div class="overlay" id="ov-export">
+  <div class="modal wide">
+    <div class="modal-head">
+      <span class="modal-title">📤 index.html আপডেট করার নির্দেশনা</span>
+      <button class="modal-close" onclick="closeModal('ov-export')">✕</button>
+    </div>
+    <div class="modal-body">
+      <ol class="steps-list">
+        <li>নিচের কোড বক্স থেকে <strong>সব কপি</strong> করুন (কপি বাটনে ক্লিক করুন)</li>
+        <li><strong>index.html</strong> ফাইল Notepad++ বা VS Code এ খুলুন</li>
+        <li>Ctrl+H চাপুন → <code>const CHANNELS = [</code> থেকে শুরু করে <code>];</code> পর্যন্ত সম্পূর্ণ Replace করুন</li>
+        <li>ফাইল সেভ করুন (Ctrl+S) তারপর সার্ভারে আপলোড করুন ✅</li>
+      </ol>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:.8rem;color:var(--t2)">📋 CHANNELS কোড — এটি কপি করে index.html এ বসান:</span>
+        <button class="btn btn-success btn-sm" onclick="copyExportCode()">📋 কপি করুন</button>
+      </div>
+      <textarea class="code-textarea" id="ex-code" readonly></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary btn-sm" onclick="dlJSON()">⬇️ channels.json ডাউনলোড</button>
+      <button class="btn btn-success btn-sm" onclick="copyExportCode()">📋 কোড কপি</button>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('ov-export')">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT CHANNEL MODAL ══ -->
+<div class="overlay" id="ov-edit">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">✏️ চ্যানেল এডিট করুন</span>
+      <button class="modal-close" onclick="closeModal('ov-edit')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">চ্যানেলের নাম *</label>
+        <input class="form-input" id="edit-name" placeholder="চ্যানেলের নাম"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ক্যাটাগরি *</label>
+        <select class="form-select" id="edit-cat">
           <option>Bangla</option><option>Documentary</option><option>English</option>
           <option>Entertainment</option><option>Hindi</option><option>Hindi Movies</option>
           <option>Infotainment</option><option>Kids</option><option>Latest</option>
           <option>Movies</option><option>Music</option><option>News</option>
-          <option>Religious</option><option selected>Sports</option>
+          <option>Religious</option><option>Sports</option>
           <option>Unknown</option><option>Weather</option>
         </select>
-        <label class="f-lbl" style="font-size:.76rem;color:var(--t2);display:block;margin-bottom:4px;margin-top:0">Stream URL * (.m3u8)</label>
-        <input class="s-inp" id="f-url" placeholder="https://...index.m3u8"/>
-        <label class="f-lbl" style="font-size:.76rem;color:var(--t2);display:block;margin-bottom:4px;margin-top:0">লোগো URL</label>
-        <div class="logo-row">
-          <input class="s-inp" id="f-logo" placeholder="https://..." style="margin:0;flex:1"
-            oninput="document.getElementById('lp-prev').src=this.value"/>
-          <div class="logo-box"><img id="lp-prev" src="" onerror="this.src='https://img.icons8.com/color/96/tv.png'"/></div>
-        </div>
-        <div class="sw-row">
-          <div class="sw-lbl">⚽ FIFA 2026 হাইলাইট<small>সোনালি বর্ডার ও ব্যাজ</small></div>
-          <label class="sw"><input type="checkbox" id="f-fifa"/><div class="sw-sl"></div></label>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-r btn-full" id="f-sub" onclick="submitForm()">➕ যোগ করুন</button>
-          <button class="btn btn-g btn-sm" id="f-can" style="display:none" onclick="resetForm()">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stream URL *</label>
+        <input class="form-input" id="edit-url" placeholder="https://...index.m3u8"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">লোগো URL</label>
+        <div class="logo-preview-row">
+          <input class="form-input" id="edit-logo" placeholder="https://..."
+            oninput="document.getElementById('edit-logo-prev').src=this.value||''" style="margin:0;flex:1"/>
+          <div class="logo-preview-box">
+            <img id="edit-logo-prev" src="" onerror="this.src='https://img.icons8.com/color/96/tv.png'" alt=""/>
+          </div>
         </div>
       </div>
-
-      <div class="sb-sec">
-        <div class="sb-title">⚽ FIFA বাল্ক</div>
-        <input class="s-inp" id="bulk-in" placeholder="T Sports HD, BTV, Somoy..."/>
-        <div class="btn-row">
-          <button class="btn btn-go btn-full btn-sm" onclick="bulkFifa(true)">✅ চালু</button>
-          <button class="btn btn-ro btn-full btn-sm" onclick="bulkFifa(false)">❌ বন্ধ</button>
-        </div>
+      <div class="toggle-row">
+        <div class="toggle-label">⚽ FIFA 2026 হাইলাইট<small>সোনালি বর্ডার ও ব্যাজ</small></div>
+        <label class="toggle"><input type="checkbox" id="edit-fifa"/><div class="toggle-track"></div></label>
       </div>
-
-      <div class="sb-sec">
-        <div class="sb-title">📥 JSON Import</div>
-        <textarea class="s-inp" id="imp-area" rows="4"
-          placeholder='[{"name":"...","cat":"...","url":"..."}]'
-          style="resize:vertical;height:80px;font-size:.76rem"></textarea>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <button class="btn btn-g btn-full btn-sm" onclick="doImport(false)">➕ বর্তমানে যোগ করুন</button>
-          <button class="btn btn-ro btn-full btn-sm" onclick="doImport(true)">🔄 সব বদলান</button>
-        </div>
-      </div>
+      <div style="color:#ef4444;font-size:.78rem;min-height:16px" id="edit-err"></div>
     </div>
-
-    <!-- MAIN -->
-    <div class="main">
-      <div class="stats" id="stats"></div>
-      <div class="toolbar">
-        <div class="srch-wrap">
-          <input type="search" id="srch" placeholder="চ্যানেল খুঁজুন..." oninput="render()"/>
-        </div>
-        <div class="flts">
-          <button class="flt on" onclick="setF('All',this)">সব</button>
-          <button class="flt" onclick="setF('Sports',this)">⚽</button>
-          <button class="flt" onclick="setF('News',this)">📰</button>
-          <button class="flt" onclick="setF('Bangla',this)">🇧🇩</button>
-          <button class="flt" onclick="setF('Entertainment',this)">📺</button>
-          <button class="flt" onclick="setF('FIFA',this)">⭐ FIFA</button>
-        </div>
-      </div>
-      <div class="ch-list" id="ch-list"></div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('ov-edit')">বাতিল</button>
+      <button class="btn btn-primary btn-sm" onclick="saveEdit()">💾 পরিবর্তন সেভ করুন</button>
     </div>
   </div>
 </div>
 
-<!-- CHANGE PASSWORD -->
-<div class="ov" id="ov-pw">
-<div class="modal">
-  <div class="mh"><div class="mh-t">🔑 পাসওয়ার্ড পরিবর্তন</div>
-    <button class="mc" onclick="hideOv('ov-pw')">✕</button></div>
-  <div class="mb">
-    <div><label class="m-lbl">বর্তমান পাসওয়ার্ড</label><input class="m-inp" id="pw-o" type="password"/></div>
-    <div><label class="m-lbl">নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input class="m-inp" id="pw-n" type="password"/></div>
-    <div><label class="m-lbl">নতুন পাসওয়ার্ড আবার</label><input class="m-inp" id="pw-n2" type="password"/></div>
-    <div style="color:#ef4444;font-size:.78rem;min-height:18px" id="pw-err"></div>
-  </div>
-  <div class="mf">
-    <button class="btn btn-g btn-sm" onclick="hideOv('ov-pw')">বাতিল</button>
-    <button class="btn btn-r btn-sm" onclick="changePw()">💾 পরিবর্তন করুন</button>
-  </div>
-</div></div>
-
-<!-- EXPORT -->
-<div class="ov" id="ov-ex">
-<div class="modal wide">
-  <div class="mh"><div class="mh-t">📤 index.html আপডেট করার নিয়ম</div>
-    <button class="mc" onclick="hideOv('ov-ex')">✕</button></div>
-  <div class="mb">
-    <ol class="steps">
-      <li>নিচের কোড বক্স থেকে <strong>কপি</strong> করুন</li>
-      <li><strong>index.html</strong> Notepad++ বা VS Code এ খুলুন</li>
-      <li>Ctrl+H → <code style="background:var(--bg);padding:1px 5px;border-radius:3px;color:var(--gold)">const CHANNELS = [</code> থেকে <code>];</code> পর্যন্ত সব Replace করুন</li>
-      <li>সেভ করে সার্ভারে আপলোড করুন ✅</li>
-    </ol>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-      <span style="font-size:.8rem;color:var(--t2)">CHANNELS code:</span>
-      <button class="btn btn-go btn-sm" onclick="copyCode()">📋 কপি</button>
-    </div>
-    <textarea class="code-box" id="ex-code" readonly></textarea>
-  </div>
-  <div class="mf">
-    <button class="btn btn-g btn-sm" onclick="dlJSON()">⬇️ channels.json</button>
-    <button class="btn btn-r btn-sm" onclick="copyCode()">📋 কোড কপি</button>
-    <button class="btn btn-g btn-sm" onclick="hideOv('ov-ex')">বন্ধ</button>
-  </div>
-</div></div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ══ DATA ══
+// ══════════════════════════════
+//  DATA
+// ══════════════════════════════
+var DEFAULT_CHANNELS = [{"id":1,"name":"T Sports HD","cat":"Sports","logo":"https://s3.aynaott.com/storage/dbc585f70a60b9855b6e13a8ce4cb6f4","url":"https://tvsen7.aynaott.com/tsports-hd/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a81b0d2b5b6c662b7723c22e643fe9bb","fifa":true},{"id":2,"name":"BTV","cat":"Entertainment","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1778082545894.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8","fifa":true},{"id":3,"name":"BTV CTG","cat":"Bangla","logo":"https://s3.aynaott.com/storage/00da8a07fb26b2fb79359ee535e4c7bc","url":"https://tvsen6.aynaott.com/btvctg/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d3a71f91859893ea4adf26425bf71814","fifa":true},{"id":4,"name":"BTV NATIONAL HD","cat":"Bangla","logo":"https://s3.aynaott.com/storage/9b6f35f73a099b7a5885a970523c5f78","url":"https://tvsen6.aynaott.com/btvhd/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ece9d3fbaa4b7dd3106f499d834f743c","fifa":true},{"id":5,"name":"BTV World","cat":"Bangla","logo":"https://s3.aynaott.com/storage/b30147b97d86754e4b97fc2989628391","url":"https://tvsen6.aynaott.com/btv_world/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d927fe8af21628ac019db2f14830b280","fifa":true},{"id":6,"name":"BTV News","cat":"News","logo":"https://s3.aynaott.com/storage/35ae3e7750a053925a0a1732e219dc7a","url":"https://tvsen6.aynaott.com/BTVNews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=9279c7c5ecd52efdf7499c7ab7d2e5a2","fifa":true},{"id":7,"name":"Somoy News TV","cat":"News","logo":"https://s3.aynaott.com/storage/ece71c1163a377fbe2d93f9d28c34f60","url":"https://tvsen6.aynaott.com/somoytv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=f28942f23e29401bd63a5b8c6174ca74","fifa":true},{"id":8,"name":"Somoy TV","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8","fifa":true},{"id":9,"name":"Star News","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1770189826301.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/index.m3u8","fifa":true},{"id":10,"name":"Bein Sports","cat":"Sports","logo":"https://s3.aynaott.com/storage/04a56bc13c4c486ad4a4d82a1e00fd73","url":"http://fl1.moveonjoy.com/BEIN_SPORTS/index.m3u8","fifa":true},{"id":11,"name":"AAKASH AATH","cat":"Bangla","logo":"https://upload.wikimedia.org/wikipedia/en/2/2b/Aakash_Aath_logo.jpg","url":"https://cdn-4.pishow.tv/live/969/master.m3u8","fifa":false},{"id":12,"name":"Ananda TV","cat":"Bangla","logo":"https://s3.aynaott.com/storage/897698f593fc07974fc46881a440733d","url":"https://tvsen6.aynaott.com/anandatv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=c2270c363d816ba2deb2c54d9bb4533e","fifa":false},{"id":13,"name":"ATN Bangla","cat":"Bangla","logo":"https://s3.aynaott.com/storage/eff41809fca04f7c1da5481e135d7913","url":"https://tvsen5.aynaott.com/atnbangla/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=7a32161af4495b66bc4140cbc21ea469","fifa":false},{"id":14,"name":"Bangla TV","cat":"Bangla","logo":"https://s3.aynaott.com/storage/e42ecfa90e3d6b15bdb7fea5ef673864","url":"https://tvsen6.aynaott.com/banglatv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=eda6519b47e209830ea7399631544082","fifa":false},{"id":15,"name":"BTV Chattogram","cat":"Bangla","logo":"","url":"https://tvsen6.aynaott.com/btvctg/index.m3u8","fifa":false},{"id":16,"name":"Channel 24 HD","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1735556516924.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8","fifa":false},{"id":17,"name":"DBC News HD","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1770186306600.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/index.m3u8","fifa":false},{"id":18,"name":"Ekattor HD","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1739963327549.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8","fifa":false},{"id":19,"name":"Jamuna TV","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560213832.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8","fifa":false},{"id":20,"name":"NTV","cat":"Entertainment","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560841094.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8","fifa":false},{"id":21,"name":"Bangla Vision","cat":"Entertainment","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1735561344354.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8","fifa":false},{"id":22,"name":"Al Jazeera","cat":"News","logo":"https://tstatic.akash-go.com/cms-ui/images/custom-content/1777454219313.png","url":"https://owrcovcrpy.gpcdn.net/bpk-tv/1721/output/index.m3u8","fifa":false},{"id":23,"name":"BBC News","cat":"News","logo":"https://s3.aynaott.com/storage/7a20437e5660324c20cf8251ccb7a697","url":"https://tvsen6.aynaott.com/bbcnews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=268a66b9a5bbee43ca78a0efdeabc1bd","fifa":false},{"id":24,"name":"CNN","cat":"News","logo":"https://s3.aynaott.com/storage/e0b6da4715f468eb39591911a0597546","url":"https://tvsen6.aynaott.com/cnn/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ad168eca79f5db976cf502ef820a5413","fifa":false},{"id":25,"name":"Cartoon Network","cat":"Kids","logo":"https://s3.aynaott.com/storage/a89142109d049ae325fd1681b50bfffb","url":"https://tvsen5.aynaott.com/cartoonnetwork/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=b3721343fcc5ec3fa4a731ee104e6a60","fifa":false},{"id":26,"name":"Disney Channel","cat":"Kids","logo":"https://s3.aynaott.com/storage/a0c74b576321da5aa33a69806401caf1","url":"https://tvsen7.aynaott.com/disney/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=84150fe42dbafc59ed694c4f307b8e54","fifa":false},{"id":27,"name":"ESPN","cat":"Sports","logo":"https://s3.aynaott.com/storage/b46df1959322aa48d270a6b163234c76","url":"https://tvsen5.aynaott.com/espn/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=005d628c60435143505f76fa9a1da290","fifa":false},{"id":28,"name":"Sky News","cat":"News","logo":"https://s3.aynaott.com/storage/69d8281f965475f3293a3e30de8c0ccb","url":"https://tvsen5.aynaott.com/skynews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a59fd3ea41e2459e612570386794d48b","fifa":false},{"id":29,"name":"DW News","cat":"News","logo":"https://s3.aynaott.com/storage/0ce159bdea29fce7e3e85d12bc8a10c5","url":"https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8","fifa":false},{"id":30,"name":"France 24","cat":"News","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/France24_logo.svg/200px-France24_logo.svg.png","url":"https://live.france24.com/hls/live/2037218-b/F24_EN_HI_HLS/master_2300.m3u8","fifa":false}];
 
-var CH = [{"id": 1, "name": "T Sports HD", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/dbc585f70a60b9855b6e13a8ce4cb6f4", "url": "https://tvsen7.aynaott.com/tsports-hd/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a81b0d2b5b6c662b7723c22e643fe9bb", "fifa": true}, {"id": 2, "name": "BTV", "cat": "Entertainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778082545894.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8", "fifa": true}, {"id": 3, "name": "BTV CTG", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/00da8a07fb26b2fb79359ee535e4c7bc", "url": "https://tvsen6.aynaott.com/btvctg/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d3a71f91859893ea4adf26425bf71814", "fifa": true}, {"id": 4, "name": "BTV NATIONAL HD", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/9b6f35f73a099b7a5885a970523c5f78", "url": "https://tvsen6.aynaott.com/btvhd/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ece9d3fbaa4b7dd3106f499d834f743c", "fifa": true}, {"id": 5, "name": "BTV World", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/b30147b97d86754e4b97fc2989628391", "url": "https://tvsen6.aynaott.com/btv_world/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d927fe8af21628ac019db2f14830b280", "fifa": true}, {"id": 6, "name": "BTV News", "cat": "News", "logo": "https://s3.aynaott.com/storage/35ae3e7750a053925a0a1732e219dc7a", "url": "https://tvsen6.aynaott.com/BTVNews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=9279c7c5ecd52efdf7499c7ab7d2e5a2", "fifa": true}, {"id": 7, "name": "BTV Chattogram (480p)", "cat": "Unknown", "logo": "", "url": "https://tvsen6.aynaott.com/btvctg/index.m3u8", "fifa": true}, {"id": 8, "name": "Somoy News TV", "cat": "News", "logo": "https://s3.aynaott.com/storage/ece71c1163a377fbe2d93f9d28c34f60", "url": "https://tvsen6.aynaott.com/somoytv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=f28942f23e29401bd63a5b8c6174ca74", "fifa": true}, {"id": 9, "name": "Somoy TV", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8", "fifa": true}, {"id": 10, "name": "Star News", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770189826301.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/index.m3u8", "fifa": true}, {"id": 11, "name": "Bein Sports", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/04a56bc13c4c486ad4a4d82a1e00fd73", "url": "http://fl1.moveonjoy.com/BEIN_SPORTS/index.m3u8", "fifa": true}, {"id": 12, "name": "T-Sports [3]", "cat": "Sports", "logo": "", "url": "https://tvsen7.aynaott.com/tsports-hd/tracks-v1a1/mono.ts.m3u8", "fifa": true}, {"id": 13, "name": "AAKASH AATH", "cat": "Bangla", "logo": "https://upload.wikimedia.org/wikipedia/en/2/2b/Aakash_Aath_logo.jpg", "url": "https://cdn-4.pishow.tv/live/969/master.m3u8", "fifa": false}, {"id": 14, "name": "Ananda TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/897698f593fc07974fc46881a440733d", "url": "https://tvsen6.aynaott.com/anandatv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=c2270c363d816ba2deb2c54d9bb4533e", "fifa": false}, {"id": 15, "name": "Asian TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/5282cec3a2e9349b750540d658cf1b6c", "url": "https://tvsen6.aynaott.com/asiantv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=73a62aff35e3e87d36323f39566c9914", "fifa": false}, {"id": 16, "name": "ATN Bangla", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/eff41809fca04f7c1da5481e135d7913", "url": "https://tvsen5.aynaott.com/atnbangla/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=7a32161af4495b66bc4140cbc21ea469", "fifa": false}, {"id": 17, "name": "Bangla TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/e42ecfa90e3d6b15bdb7fea5ef673864", "url": "https://tvsen6.aynaott.com/banglatv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=eda6519b47e209830ea7399631544082", "fifa": false}, {"id": 18, "name": "Bijoy TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/f23d6f82c1a16458fe0e4c6f11b8fd87", "url": "https://tvsen6.aynaott.com/bijoytv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=61c31b475b9037a92367e411c691d36f", "fifa": false}, {"id": 19, "name": "Boishakhi TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/58658d4594ca1ff3c5031c9d8e3d9fc0", "url": "https://tvsen6.aynaott.com/boishakhitv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a82c6f69c499a2c7c55aeac6c765dd3b", "fifa": false}, {"id": 20, "name": "DD Bangla", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/e5117c508d18adf0a3f2475eb1fd5a9d", "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index_3.m3u8", "fifa": false}, {"id": 21, "name": "Desh TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/d10390e5434e8cb44172257abd714beb", "url": "https://tvsen6.aynaott.com/deshtv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=bd95cc95ca883dcac992bf20933bbc53", "fifa": false}, {"id": 22, "name": "Dipto TV", "cat": "Bangla", "logo": "https://upload.wikimedia.org/wikipedia/en/4/4e/Diptotv_logo.jpg", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1711/output/1711-audio_113412_eng=113200-video=1692000.m3u8", "fifa": false}, {"id": 23, "name": "Doraemon", "cat": "Bangla", "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/b/b8/Doraemon_logo.png/200px-Doraemon_logo.png", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209902/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 24, "name": "Drama 24", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/08773290bf83a917aebc07810f12ed49", "url": "https://vods2.aynaott.com/gseriesDrama/index.m3u8", "fifa": false}, {"id": 25, "name": "Duronto TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/51f1530c076c027e431bf18a49613f0b", "url": "https://tvsen6.aynaott.com/durontotv-live/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=4d76fc09cc3a5ec4e5c3599e2a0f8bb0", "fifa": false}, {"id": 26, "name": "Ekattor HD 71", "cat": "Bangla", "logo": "https://upload.wikimedia.org/wikipedia/en/5/57/Ekusheytv.jpg", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705-audio_113352_eng=113200-video=1692000.m3u8", "fifa": false}, {"id": 27, "name": "Enter 10 Bangla", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/2b00567c538d392c8050124f0064c4a1", "url": "https://live-bangla.akamaized.net/liveabr/playlist.m3u8", "fifa": false}, {"id": 28, "name": "ETV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/8a1af81802b0728c064c2adabcdc72c8", "url": "https://tvsen6.aynaott.com/etv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a46fbd421bbce51ceefe22655c151a68", "fifa": false}, {"id": 29, "name": "Gazi TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/417a833f6d83021c99bfc3d4176610f4", "url": "https://tvsen5.aynaott.com/Ravc7gPCZpxk/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=716c97b1139e1969c3786b87a177fcf0", "fifa": false}, {"id": 30, "name": "Global TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/ffd7ba9b76ad555933f94bcb7ff26b44", "url": "https://tvsen6.aynaott.com/globaltvhd/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=f551349695cf8c37eadb36a569a1e576", "fifa": false}, {"id": 31, "name": "Jumuna TV", "cat": "Bangla", "logo": "https://upload.wikimedia.org/wikipedia/en/1/11/Jamuna_TV_logo.jpg", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/1701-audio_113312_eng=113200-video=1692000.m3u8", "fifa": false}, {"id": 32, "name": "MAASRANGA HD", "cat": "Bangla", "logo": "https://static.wikia.nocookie.net/etv-gspn-bangla/images/a/a3/Maasranga_TV_HD_logo.png", "url": "http://mtv.sunplex.live/MAASRANGA-TV/index.m3u8", "fifa": false}, {"id": 33, "name": "Mohona TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/73082846fdc15d9f0e7268b104c55d92", "url": "https://tvsen6.aynaott.com/mohonatv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=5c1117dca0dcce12f82bf9f290c17aef", "fifa": false}, {"id": 34, "name": "My TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/c5b2c623863fbe4033d59d52ff7371ac", "url": "https://tvsen6.aynaott.com/mytv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=6e082ec0834f11725f7654429127c3ec", "fifa": false}, {"id": 35, "name": "NEXUS TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/90635c3edf6e3c8dd92210b7248f1fa0", "url": "https://tvsen6.aynaott.com/nexustv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=50ecbe5f3cb56040e0a71769b39ee835", "fifa": false}, {"id": 36, "name": "Peace TV Bangla HD", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/e33b23f7dc3d39008d672952c33069d4", "url": "https://tvsen7.aynaott.com/PeaceTvBanglaHD/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=bf05e5a355d1d4f95298cd6f09d66611", "fifa": false}, {"id": 37, "name": "R Plus Gould", "cat": "Bangla", "logo": "", "url": "https://cdn-4.pishow.tv/live/1231/1231_2.m3u8", "fifa": false}, {"id": 38, "name": "RTV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/094587a26f2c5e4f2962104728ec8c5d", "url": "https://tvsen5.aynaott.com/RtvHD/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=1d954d822b6a034cd7bf06060c3cb272", "fifa": false}, {"id": 39, "name": "SA TV", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/f710d2ff532cb7e7b75566232c5b72d3", "url": "https://tvsen6.aynaott.com/satv/index.m3u8?e=1781099576&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ef12aa29592a0666fc45b7401cf7b082", "fifa": false}, {"id": 40, "name": "Thikana", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/6d1aaa03b84a69992940873fc11af8fc", "url": "https://5dd3981940faa.streamlock.net:443/thikanatv/thikanatv/playlist.m3u8", "fifa": false}, {"id": 41, "name": "TIME TV USA", "cat": "Bangla", "logo": "https://s3.aynaott.com/storage/111bfd01fb43770e925ca9cf16663f56", "url": "https://tvsen7.aynaott.com/timetv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=5905711dd0bc3c2a9df276583c05a1f0", "fifa": false}, {"id": 42, "name": "Channel 24 HD", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735556516924.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8", "fifa": false}, {"id": 43, "name": "DBC News HD", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770186306600.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/index.m3u8", "fifa": false}, {"id": 44, "name": "Ekattor HD", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1739963327549.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8", "fifa": false}, {"id": 45, "name": "Ekattor TV", "cat": "News", "logo": "https://s3.aynaott.com/storage/d91767995b2f2a54852c92bbbc20daa7", "url": "https://tvsen6.aynaott.com/ekattorbdtv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=e4b7c9f62783681d641633d645e15ec2", "fifa": false}, {"id": 46, "name": "Ekhon TV", "cat": "News", "logo": "https://s3.aynaott.com/storage/274c30c492e8795c8011d0129113f4bc", "url": "https://tvsen6.aynaott.com/ekhontv/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=fd5ff2658d9f39ac1ba7a526cf84804e", "fifa": false}, {"id": 47, "name": "France News 24", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/France24_logo.svg/200px-France24_logo.svg.png", "url": "https://live.france24.com/hls/live/2037179/F24_FR_HI_HLS/master_5000.m3u8", "fifa": false}, {"id": 48, "name": "Independent TV", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778087037971.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1704/output/index.m3u8", "fifa": false}, {"id": 49, "name": "Jamuna TV", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560213832.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8", "fifa": false}, {"id": 50, "name": "News 24 BD", "cat": "News", "logo": "https://s3.aynaott.com/storage/7c002f22c02096b0d1ba833ae9ea6d5b", "url": "https://tvsen6.aynaott.com/news24/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=3d0a94708e8865fd29f639482d412436", "fifa": false}, {"id": 51, "name": "News 24 HD", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/en/b/b7/News24_bd_logo.jpg", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8", "fifa": false}, {"id": 52, "name": "R Plus News", "cat": "News", "logo": "", "url": "https://thelegitpro.in/pntv/rplusnews24x7/tracks-v1a1/mono.m3u8", "fifa": false}, {"id": 53, "name": "TV9 Bangla", "cat": "News", "logo": "https://s3.aynaott.com/storage/7b93f6be496c9fd25769b09970180c4c", "url": "https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9banaen8yq/liveabr/playlist.m3u8", "fifa": false}, {"id": 54, "name": "Bangla Vision", "cat": "Entertainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735561344354.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/index.m3u8", "fifa": false}, {"id": 55, "name": "Channel 9 HD", "cat": "Entertainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770188008067.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1729/output/index.m3u8", "fifa": false}, {"id": 56, "name": "Channel I HD", "cat": "Entertainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1740567626692.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/index.m3u8", "fifa": false}, {"id": 57, "name": "Deepto TV", "cat": "Entertainment", "logo": "https://upload.wikimedia.org/wikipedia/en/3/31/Deepto_TV_logo.png", "url": "https://byphdgllyk.gpcdn.net/hls/deeptotv/0_1/index.m3u8", "fifa": false}, {"id": 58, "name": "Maasranga TV", "cat": "Entertainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1773680325498.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8", "fifa": false}, {"id": 59, "name": "News Time Bangla", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/b051fa53014fff26dabf744955969810", "url": "https://tvsen6.aynaott.com/NewsTime/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=bda94fdebcdb4d3c5e011744cd4ad119", "fifa": false}, {"id": 60, "name": "NTV", "cat": "Entertainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560841094.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1716/output/index.m3u8", "fifa": false}, {"id": 61, "name": "R Plus", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/9531f970bb7abf30ac2a48f40838c3a1", "url": "https://thelegitpro.in/pntv/rplusnews24x7/index.m3u8", "fifa": false}, {"id": 62, "name": "R Plus Gold", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/5a7f80e9417b452051a0e75db768e796", "url": "https://tvsen6.aynaott.com/RplusGold/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=e3428bf078ec715dd5cce016088ab2fd", "fifa": false}, {"id": 63, "name": "Republic Bangla", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/18cb20e8e53eb27249c62d3aedf51241", "url": "https://tvsen5.aynaott.com/R_Bangla/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=638a4cbf28612662dbd10af59c82c8e7", "fifa": false}, {"id": 64, "name": "Sangeet Bangla", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/80424ce0682e14e7d51e28de33d5f380", "url": "https://cdn-4.pishow.tv/live/1143/master.m3u8", "fifa": false}, {"id": 65, "name": "A SPOR", "cat": "Sports", "logo": "", "url": "https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/aspor/aspor_480p.m3u8", "fifa": false}, {"id": 66, "name": "A sports", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/64de30d2df9b2a888cb73f17614a9a8b", "url": "https://tvsen6.aynaott.com/asports/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=8c68bf361f3dc1fd281b46169d63603d", "fifa": false}, {"id": 67, "name": "Bahrain Sports 1", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/f55bea3263be1af187fe1122e4f44142", "url": "https://5c7b683162943.streamlock.net/live/ngrp:sportsone_all/playlist.m3u8", "fifa": false}, {"id": 68, "name": "BAN vs AUS One-Day Match Mirpur", "cat": "Sports", "logo": "", "url": "https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1780987538&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=de27527a270db6696537cd0c42fd982d", "fifa": false}, {"id": 69, "name": "Bleav Football", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/030ec528e912afb9a2ec3b4c5167a928", "url": "https://linear-493.frequency.stream/dist/glewedtv/493/hls/master/playlist.m3u8", "fifa": false}, {"id": 70, "name": "Bloomberg TV", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/253dcc8b5951160d6aa26bc5ac65ddb8", "url": "https://tvsen6.aynaott.com/bloombergtv/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=5a524e3c8f1f38d191653cbdda80e29c", "fifa": false}, {"id": 71, "name": "BT Sports 2", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/0b6e5ad3267e5a5897abbe8f3be7b78a", "url": "https://tvsen6.aynaott.com/btSport2/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=19a20aea896e6c6510b360b097f86bb2", "fifa": false}, {"id": 72, "name": "Cowboy tv", "cat": "Sports", "logo": "", "url": "https://amg17292-amg17292c1-distrotv-us-4170.playouts.now.amagi.tv/playlist/amg17292-tetonridgellc-tetonridgefast-distrotvus/playlist.m3u8", "fifa": false}, {"id": 73, "name": "Crazy Ex", "cat": "Sports", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778085745609.png", "url": "https://nomawnoijl.gpcdn.net/akash/crazy_ex/playlist.m3u8", "fifa": false}, {"id": 74, "name": "Cricket Gold", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/7d20b575edc4e4b5276faa8c246e72a4", "url": "https://tvsen6.aynaott.com/CricketGold/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=700997abd611b1065967a9c1c9695ce8", "fifa": false}, {"id": 75, "name": "DD Sports", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/188500190395c4de0e506d518925dcc4", "url": "https://cdn-6.pishow.tv/live/13/master.m3u8", "fifa": false}, {"id": 76, "name": "Espn", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/b46df1959322aa48d270a6b163234c76", "url": "https://tvsen5.aynaott.com/espn/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=005d628c60435143505f76fa9a1da290", "fifa": false}, {"id": 77, "name": "Fighters", "cat": "Sports", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380942670.png", "url": "https://nomawnoijl.gpcdn.net/akash/fighter/playlist.m3u8", "fifa": false}, {"id": 78, "name": "Flash Guys HD", "cat": "Sports", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378074527.png", "url": "https://nomawnoijl.gpcdn.net/akash/flashguys/playlist.m3u8", "fifa": false}, {"id": 79, "name": "Fox Sports 2", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/da4282cd107cc3d40efadae488b187e5", "url": "https://tvsen7.aynaott.com/foxsports2/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=7c96217c8fd6670ee3d53478706c663b", "fifa": false}, {"id": 80, "name": "Golf Channel", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/edb73991516696dfd53efbd32d80ca58", "url": "https://tvsen6.aynaott.com/golfchannel/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ef52c7d89685ee810ece93d5ada51640", "fifa": false}, {"id": 81, "name": "KTV Sport Plus", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/b54495ee3cdd53ddaa19d1f98120f488", "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8", "fifa": false}, {"id": 82, "name": "Live Quran TV", "cat": "Sports", "logo": "", "url": "https://live.kwikmotion.com/sharjahtvquranlive/shqurantv.smil/playlist.m3u8", "fifa": false}, {"id": 83, "name": "Live Sports", "cat": "Sports", "logo": "", "url": "https://tvsen7.aynaott.com/sspts1/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 84, "name": "Marquee Sports Network", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/66bdaa21aba96de6d32a3515715f7502", "url": "https://tvsen6.aynaott.com/MarqueeSportsNetwork/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=b67717899f0f5e3bff26e201fc220c52", "fifa": false}, {"id": 85, "name": "More Then Sports TV", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/39174e32d4f8d29a95c881637fe1ecdb", "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8", "fifa": false}, {"id": 86, "name": "Motor Vision", "cat": "Sports", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/MotorVision_TV_Logo.svg/200px-MotorVision_TV_Logo.svg.png", "url": "https://mvg-mv-xumo.otteravision.com/mvg/mv/mv.m3u8", "fifa": false}, {"id": 87, "name": "MTR Sports-1", "cat": "Sports", "logo": "", "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg02873-kravemedia-mtrspt1-distrotv/playlist.m3u8", "fifa": false}, {"id": 88, "name": "NBC Sports", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/0a241a80bf51d2c3b3722531706ce086", "url": "https://xumo-xumoent-vc-122-sjv70.fast.nbcuni.com/live/master.m3u8", "fifa": false}, {"id": 89, "name": "NFL Network", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/79f1ee920d6931a767ae0030e1c7c12b", "url": "https://tvsen6.aynaott.com/nfl/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a5cff969125532a6890e67217fdfca94", "fifa": false}, {"id": 90, "name": "Oman Sports TV", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/33f87783637fc95fdb8837ba9344c9e9", "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8", "fifa": false}, {"id": 91, "name": "PTV Sports", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/9d9d7cbfba5a8ceea648bbd963ad1014", "url": "https://tvsen5.aynaott.com/PtvSports/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=741ef6b74c622429044b82b3506b0cb2", "fifa": false}, {"id": 92, "name": "PTV Sports-[2]", "cat": "Sports", "logo": "", "url": "https://tvsen5.aynaott.com/PtvSports/index.m3u8", "fifa": false}, {"id": 93, "name": "RO | DIGI SPORT 1 FHD", "cat": "Sports", "logo": "", "url": "http://cdn.tv-rds.workers.dev/DigiSport1.m3u8", "fifa": false}, {"id": 94, "name": "RO | DIGI SPORT 3 FHD", "cat": "Sports", "logo": "", "url": "http://cdn.tv-rds.workers.dev/DigiSport3.m3u8", "fifa": false}, {"id": 95, "name": "Saudia Arabia", "cat": "Sports", "logo": "", "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-saudi-tv/2ad66056b51fd8c1b624854623112e43/index.m3u8", "fifa": false}, {"id": 96, "name": "speed sports 1", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/06f5b193bfa4d31310ee934eb3c2222e", "url": "https://linear-599.frequency.stream/dist/stirr/599/hls/master/playlist.m3u8", "fifa": false}, {"id": 97, "name": "Sports First TV", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/748d28752dcf95740561f1ac39e15fc3", "url": "https://d4ddgdmj1cvnm.cloudfront.net/scheduler/scheduleMaster/409.m3u8", "fifa": false}, {"id": 98, "name": "Sports Grid", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/1aa37e387ed56a1260b285558eec7c46", "url": "https://tvsen6.aynaott.com/SportsGrid/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=3dd0c0ad2652a3381f09038ccd39025d", "fifa": false}, {"id": 99, "name": "Sports Legends", "cat": "Sports", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770377900139.png", "url": "https://nomawnoijl.gpcdn.net/akash/sportslegends/playlist.m3u8", "fifa": false}, {"id": 100, "name": "Sports Range", "cat": "Sports", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380601958.png", "url": "https://nomawnoijl.gpcdn.net/akash/sportrange/playlist.m3u8", "fifa": false}, {"id": 101, "name": "Star Sports 1 HD", "cat": "Sports", "logo": "https://upload.wikimedia.org/wikipedia/en/a/a4/Star_Sports_1_India.png", "url": "http://41.205.93.154/STARSPORTS1/index.m3u8", "fifa": false}, {"id": 102, "name": "Talk Sport", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/5128cd32518d5a9ba7a37e21947fd8fd", "url": "https://tvsen6.aynaott.com/talkSPORT/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=0ed215332b7789aebb1afcc778578f37", "fifa": false}, {"id": 103, "name": "Thunder Er", "cat": "Sports", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380791303.png", "url": "https://nomawnoijl.gpcdn.net/akash/thunder/playlist.m3u8", "fifa": false}, {"id": 104, "name": "TSN 1", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/59fe7ff434fed04ecec29b4d737ebc95", "url": "https://tvsen7.aynaott.com/tsn1/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=aaa783160157b19b8440432f038444df", "fifa": false}, {"id": 105, "name": "TSN 2", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/17642cb60c2af7fc36ca1e08cc54fdae", "url": "https://tvsen7.aynaott.com/tsn2/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=08fc621a6c6121f99ebf4a65c5acf89a", "fifa": false}, {"id": 106, "name": "TSN 3", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/1cb10107a47db353e35ad78d3160eda7", "url": "https://tvsen7.aynaott.com/tsn3/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=44608bf74006377c11f99f5a5e8402a5", "fifa": false}, {"id": 107, "name": "WAZ TV", "cat": "Sports", "logo": "", "url": "https://tplay.live/originals/ilm-tv/index.m3u8", "fifa": false}, {"id": 108, "name": "Willow Extra Live", "cat": "Sports", "logo": "", "url": "http://27.124.71.27/Willow_Extra/index.m3u8", "fifa": false}, {"id": 109, "name": "Willow HD", "cat": "Sports", "logo": "", "url": "https://tvsen5.aynaott.com/willowhd/index.m3u8", "fifa": false}, {"id": 110, "name": "Willow TV", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/94a778ec3219f7eb54bdf1ee07a95788", "url": "https://tvsen5.aynaott.com/willowhd/index.m3u8?e=1781099578&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d0f334ff8af9ded08648dd2d72674cbc", "fifa": false}, {"id": 111, "name": "WOF 1", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/1a580ee2636a0c4761e623bc131ba7a6", "url": "https://mainstreammedia-worldoffreesportsintl-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-mainstreammediafreesportsintl-rakuten/CDN/master.m3u8", "fifa": false}, {"id": 112, "name": "Xtrem Sports", "cat": "Sports", "logo": "https://s3.aynaott.com/storage/e1749cf3040f11c63e722c941f213927", "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/e0b81a5c-6ab5-48cd-aaa9-f82de4ab5bf9/manifest.m3u8", "fifa": false}, {"id": 113, "name": "ABC 7 Bay", "cat": "News", "logo": "https://s3.aynaott.com/storage/b28173a251bda1357f9884ca7eef7b89", "url": "https://content.uplynk.com/channel/ext/4413701bf5a1488db55b767f8ae9d4fa/kgo_24x7_news.m3u8", "fifa": false}, {"id": 114, "name": "ABC News", "cat": "News", "logo": "https://s3.aynaott.com/storage/065af1ce1aa68d9d96c27050a8125413", "url": "https://tvsen6.aynaott.com/AbcNews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=3e406b66ad3850b8eccced230d8ee37e", "fifa": false}, {"id": 115, "name": "Al Jazeera", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1777454219313.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1721/output/index.m3u8", "fifa": false}, {"id": 116, "name": "AlJazeera", "cat": "News", "logo": "https://s3.aynaott.com/storage/5d707a103f48d8f9f1634f1b70e2ecdf", "url": "https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8", "fifa": false}, {"id": 117, "name": "ANB News", "cat": "News", "logo": "https://s3.aynaott.com/storage/4ec06dcab54cbbf5b204f797555e6b31", "url": "https://tvsen6.aynaott.com/ANB_News/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=3be2337b643f1493a765ec876f872737", "fifa": false}, {"id": 118, "name": "ATN News", "cat": "News", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1739962961772.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8", "fifa": false}, {"id": 119, "name": "BBC News", "cat": "News", "logo": "https://s3.aynaott.com/storage/7a20437e5660324c20cf8251ccb7a697", "url": "https://tvsen6.aynaott.com/bbcnews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=268a66b9a5bbee43ca78a0efdeabc1bd", "fifa": false}, {"id": 120, "name": "BEK TV News", "cat": "News", "logo": "https://s3.aynaott.com/storage/4eaf83274ee309489b535852b1780ad2", "url": "https://cdn3.wowza.com/5/ZWQ1K2NYTmpFbGsr/BEK-WOWZA-1/smil:BEKPRIMEeast.smil/playlist.m3u8", "fifa": false}, {"id": 121, "name": "CNN", "cat": "News", "logo": "https://s3.aynaott.com/storage/e0b6da4715f468eb39591911a0597546", "url": "https://tvsen6.aynaott.com/cnn/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ad168eca79f5db976cf502ef820a5413", "fifa": false}, {"id": 122, "name": "DW News", "cat": "News", "logo": "https://s3.aynaott.com/storage/0ce159bdea29fce7e3e85d12bc8a10c5", "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/master.m3u8", "fifa": false}, {"id": 123, "name": "France 24 English (720p)", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/France24_logo.svg/200px-France24_logo.svg.png", "url": "https://live.france24.com/hls/live/2037218-b/F24_EN_HI_HLS/master_2300.m3u8", "fifa": false}, {"id": 124, "name": "Global News (US)", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Global_News_Logo_2022.svg/200px-Global_News_Logo_2022.svg.png", "url": "https://live.corusdigitaldev.com/groupb/live/3062d0e3-ed4c-4f47-8482-95648250f4b8/live.isml/.m3u8", "fifa": false}, {"id": 125, "name": "Hindi Khabar", "cat": "News", "logo": "https://s3.aynaott.com/storage/d3943796d7fe5962ca5385b656682b1a", "url": "https://tvsen7.aynaott.com/HindiKhabar/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=fde3cee92abf25de39f2f22e6e86fa01", "fifa": false}, {"id": 126, "name": "India Today", "cat": "News", "logo": "https://s3.aynaott.com/storage/49b496bca6d7c67d53431e9238f83397", "url": "https://feeds.intoday.in/hltapps/api/master.m3u8", "fifa": false}, {"id": 127, "name": "Iran International(EN)", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/en/1/14/IranIntl_logo.png", "url": "https://dev-live.livetvstream.co.uk/LS-63503-4/chunklist_b1196000.m3u8", "fifa": false}, {"id": 128, "name": "NDTV English", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/en/3/33/NDTV_logo.jpg", "url": "https://ndtv24x7elemarchana.akamaized.net/hls/live/2003678/ndtv24x7/master.m3u8", "fifa": false}, {"id": 129, "name": "NDTV NEWS", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/en/3/33/NDTV_logo.jpg", "url": "https://ndtv24x7elemarchana.akamaized.net/hls/live/2003678-b/ndtv24x7/master.m3u8", "fifa": false}, {"id": 130, "name": "News 1 India", "cat": "News", "logo": "https://s3.aynaott.com/storage/c643b3f7d7f79ad3913b5d2037f13a88", "url": "https://tvsen6.aynaott.com/News1India/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=02bf5a0b956f48b63d9a719146e12484", "fifa": false}, {"id": 131, "name": "News Max 2", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Newsmax_TV_logo_2020.svg/200px-Newsmax_TV_logo_2020.svg.png", "url": "https://nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8", "fifa": false}, {"id": 132, "name": "News Nation", "cat": "News", "logo": "https://s3.aynaott.com/storage/1001f1d96d63da3ced733a843613b6e0", "url": "https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/6cd2f649739a45ca9de1daf81cc7d0f2/index.m3u8", "fifa": false}, {"id": 133, "name": "NHK World", "cat": "News", "logo": "https://s3.aynaott.com/storage/d969a37a7e1bbd49449ae092d34f0549", "url": "https://tvsen6.aynaott.com/nhkworld/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d36e067d820c38bd377bfe6f8daec1d2", "fifa": false}, {"id": 134, "name": "OAN", "cat": "News", "logo": "https://s3.aynaott.com/storage/73820738ff3902737f987eb34612b26d", "url": "https://a-cdn.klowdtv.com/live1/oan_720p/playlist.m3u8", "fifa": false}, {"id": 135, "name": "Press TV Iran", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/en/2/2e/PressTV_logo.png", "url": "https://live.presstv.ir/hls/presstv_5_482/index.m3u8", "fifa": false}, {"id": 136, "name": "RT News (EN)", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/RT_logo.svg/200px-RT_logo.svg.png", "url": "https://rt-glb.rttv.com/live/rtnews/playlist.m3u8", "fifa": false}, {"id": 137, "name": "RT NEWS USA", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/RT_logo.svg/200px-RT_logo.svg.png", "url": "https://rt-glb.rttv.com/live/rtnews/playlist.m3u8?v=1", "fifa": false}, {"id": 138, "name": "RTNEWS GLOBAL", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/RT_logo.svg/200px-RT_logo.svg.png", "url": "https://rt-rtd.rttv.com/dvr/rtdoc/playlist.m3u8?v=1", "fifa": false}, {"id": 139, "name": "Sadhna Prime News", "cat": "News", "logo": "https://s3.aynaott.com/storage/80e4113d034ad20bcbea341dcb4ae27e", "url": "https://tvsen6.aynaott.com/SadhnaPrimeNews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=740a91af0ac65e4723eec3ae41530e17", "fifa": false}, {"id": 140, "name": "Sky News", "cat": "News", "logo": "https://s3.aynaott.com/storage/69d8281f965475f3293a3e30de8c0ccb", "url": "https://tvsen5.aynaott.com/skynews/index.m3u8?e=1781099577&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a59fd3ea41e2459e612570386794d48b", "fifa": false}, {"id": 141, "name": "T Global News (Canada)", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Global_News_Logo_2022.svg/200px-Global_News_Logo_2022.svg.png", "url": "https://live.corusdigitaldev.com/groupd/live/49a91e7f-1023-430f-8d66-561055f3d0f7/live.isml/master.m3u8", "fifa": false}, {"id": 142, "name": "Times Of India", "cat": "News", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Times_Now_logo.svg/200px-Times_Now_logo.svg.png", "url": "https://live.sli.ke/live/npnhm84gz9/master.m3u8", "fifa": false}, {"id": 143, "name": "TRT World", "cat": "News", "logo": "https://s3.aynaott.com/storage/f63d4aad95532175f7f44be439f74111", "url": "https://tv-trtworld.medya.trt.com.tr/master.m3u8", "fifa": false}, {"id": 144, "name": "Wion", "cat": "News", "logo": "https://s3.aynaott.com/storage/671cfb22f8d0362ae01403b6e748f2e2", "url": "https://d7x8z4yuq42qn.cloudfront.net/index_7.m3u8", "fifa": false}, {"id": 145, "name": "9x Jalwa", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/d2d8f00a60dc64dad6c0181cd86f7869", "url": "https://tvsen6.aynaott.com/9xjalwa/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=1d6c7373531851ce7789dcd0b89a1e9b", "fifa": false}, {"id": 146, "name": "9X Tashan", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/5d052254516639955d06182690d3fda2", "url": "https://tvsen6.aynaott.com/9X_Tashan/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=9d3176028c61151efda6a464a74b7b9a", "fifa": false}, {"id": 147, "name": "Assam Talks", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/e7d8cff366343b850d04a655c6fbf2ff", "url": "https://tvsen7.aynaott.com/AssamTalks/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=0cc2966801bd630b8dc0ce5a638da265", "fifa": false}, {"id": 148, "name": "B4U Kadak", "cat": "Hindi Movies", "logo": "https://upload.wikimedia.org/wikipedia/en/5/52/B4U_Kadak_logo.jpg", "url": "https://cdn-2.pishow.tv/live/227/master.m3u8", "fifa": false}, {"id": 149, "name": "Dangal", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/cb1c3e153b951760fb0396cd27b8a715", "url": "https://tvsen6.aynaott.com/Dangal/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=052966fbb0ebdfae991b488613d5b612", "fifa": false}, {"id": 150, "name": "Dhinchaak", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/f4edcca7247bbb4a263a51d7ebb82282", "url": "https://tvsen6.aynaott.com/Dhinchaak/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=a0e0d530885dcbd32bfc485155438235", "fifa": false}, {"id": 151, "name": "Geo ENT", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/e0d54d73e6b9cf211cd760650467e596", "url": "https://jk3lz82elw79-hls-live.5centscdn.com/harPalGeo/955ad3298db330b5ee880c2c9e6f23a0.sdp/playlist.m3u8", "fifa": false}, {"id": 152, "name": "Goldmines", "cat": "Hindi Movies", "logo": "https://upload.wikimedia.org/wikipedia/en/8/8b/Goldmines_Telefilms.jpg", "url": "https://cdn-2.pishow.tv/live/1459/master.m3u8", "fifa": false}, {"id": 153, "name": "Goldmines Bollywood", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/e92e9e2fb70909f3dd30a8d89e644119", "url": "https://tvsen6.aynaott.com/GoldminesBollywood/index.m3u8", "fifa": false}, {"id": 154, "name": "Goldmines Movies", "cat": "Hindi Movies", "logo": "", "url": "https://cdn-2.pishow.tv/live/1461/master.m3u8", "fifa": false}, {"id": 155, "name": "Goldmines Movies 2", "cat": "Hindi Movies", "logo": "", "url": "https://cdn-2.pishow.tv/live/1460/master.m3u8", "fifa": false}, {"id": 156, "name": "Green TV HD", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/499219599639007120dc540bdc6e7d9d", "url": "https://tvsen6.aynaott.com/GreenTvHD/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=7c8ef7c618ad3866f8e0b9498d33fe4d", "fifa": false}, {"id": 157, "name": "Hindi Movie Classic 24", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/3132515182ec50091b496fe515564084", "url": "https://vods2.aynaott.com/hindimovies/index.m3u8", "fifa": false}, {"id": 158, "name": "Hindi Movies", "cat": "Hindi", "logo": "", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209612/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 159, "name": "Khushboo", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/d90eb718a6674494d2dac28e1d96bf44", "url": "https://cdn-4.pishow.tv/live/1473/master.m3u8", "fifa": false}, {"id": 160, "name": "Manoranjan TV", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/1a62a70103bac9999411a72b8a8b7ccc", "url": "https://tvsen6.aynaott.com/ManoranjanTV/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=cc6956f0bc3dcf3d660dfa9e7f53af9a", "fifa": false}, {"id": 161, "name": "MBC tv", "cat": "Hindi", "logo": "", "url": "http://93.184.10.248/MBCBollywood/index.m3u8", "fifa": false}, {"id": 162, "name": "MK Six", "cat": "Hindi", "logo": "", "url": "https://cdn-3.pishow.tv/live/1253/master.m3u8", "fifa": false}, {"id": 163, "name": "Music India", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/20c3a2638df99ece9eb12aabfc03a8c3", "url": "https://cdn-2.pishow.tv/live/226/master.m3u8", "fifa": false}, {"id": 164, "name": "Network 10", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/09e356a3181cc613cf5680619d50a5f5", "url": "https://tvsen6.aynaott.com/Network10/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=df19d58593a941f9beada2fdf97d2404", "fifa": false}, {"id": 165, "name": "Republic TV Bharat", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/947715e0a22f16ac21805073ce6eb0b6", "url": "https://tvsen6.aynaott.com/RepublicTVBharat/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=3094132cb8fc1a331aa7b503d2bd03fe", "fifa": false}, {"id": 166, "name": "Rongeen TV", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/296b530024a470f52313692636810e04", "url": "https://server.thelegitpro.in/rongeentv/rongeentv/index.m3u8", "fifa": false}, {"id": 167, "name": "Sheemaroo Bollywood", "cat": "Hindi Movies", "logo": "https://upload.wikimedia.org/wikipedia/en/c/c8/ShemarooMe_logo.png", "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8", "fifa": false}, {"id": 168, "name": "Shemaroo TV", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/c63628e7301ba1eded68c0f75ab8d903", "url": "https://cdn-3.pishow.tv/live/230/master.m3u8", "fifa": false}, {"id": 169, "name": "Sony ATTH", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/f7bfca4f0a3860067bf2eac37f41214c", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209611/index.m3u8", "fifa": false}, {"id": 170, "name": "South Movies", "cat": "Hindi", "logo": "", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209593/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 171, "name": "Taaza TV", "cat": "Hindi", "logo": "https://s3.aynaott.com/storage/01c9cb3e1a4c90da6685700da863f0ce", "url": "https://tvsen7.aynaott.com/TaazaTV/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=7b96f7e2486fc027d36782e22526d531", "fifa": false}, {"id": 172, "name": "kolkata TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/c355110e9cbebd89649a95f0f0fd77da", "url": "https://tvsen6.aynaott.com/kolkatatv/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=fa7a13c4af3514ba65dabe1a1d872d73", "fifa": false}, {"id": 173, "name": "Zee 24 Ghanta", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/fea79ac5193dd9fb80aa1996f2adc1e2", "url": "https://tvsen6.aynaott.com/zee24/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=5556ff45e75c6428d70e97cdc0689e12", "fifa": false}, {"id": 174, "name": "4k Travel", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/6ccc7357c3d8d35770732126dd819596", "url": "https://streams2.sofast.tv/sofastplayout/33c31ac4-51fa-46ae-afd0-0d1fe5e60a80_0_HLS/master.m3u8", "fifa": false}, {"id": 175, "name": "AMC TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/5522b7ef736d7f4e7f80ac6325dce821", "url": "https://tvsen6.aynaott.com/amc/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=b0438f535dacd430f7ae5b48ae5740c2", "fifa": false}, {"id": 176, "name": "AXS", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/56d2c21362152b678998094f1c670dd5", "url": "https://tvsen6.aynaott.com/axs/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=8163d63b9874c9345e3e4ef7d9631943", "fifa": false}, {"id": 177, "name": "CMAC TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/14a329b450239b9a4beaa4953c33367b", "url": "https://reflect-vod-cmac.cablecast.tv/live-11/live/stream-2/live.m3u8", "fifa": false}, {"id": 178, "name": "Colors Infinity SD", "cat": "Entertainment", "logo": "", "url": "https://livecdn.live247stream.com/joomusic/tv/playlist.m3u8", "fifa": false}, {"id": 179, "name": "Cowboy Movie Channel", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/cb1ab052f5b733bbf600a7a8e3a1164b", "url": "https://streams2.sofast.tv/sofastplayout/32eb332e-f644-46e5-ad91-e55ad80d14f7_0_HLS/master.m3u8", "fifa": false}, {"id": 180, "name": "Ekushey TV", "cat": "Entertainment", "logo": "https://s4.gifyu.com/images/image534fa27d7683f33d.png", "url": "http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8", "fifa": false}, {"id": 181, "name": "FASHION ONE", "cat": "Entertainment", "logo": "", "url": "https://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e2ee6997cb_1/playlist.m3u8", "fifa": false}, {"id": 182, "name": "Goal TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/495e1816602db61aa4c2a348a257bd0a", "url": "https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8", "fifa": false}, {"id": 183, "name": "InTravel", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/b35e9c1bcde3e6876892a22f91a9c4b5", "url": "https://amg00861-amg00861c10-rakuten-uk-3152.playouts.now.amagi.tv/playlist.m3u8", "fifa": false}, {"id": 184, "name": "Movie Sphere", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/4d343b446b1e7164bb7239bbe822a570", "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8", "fifa": false}, {"id": 185, "name": "Persiana Travel", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/be9b48d87dcd7711cac19c17d8e01b27", "url": "https://ptravelhls.persiana.live/hls/stream.m3u8", "fifa": false}, {"id": 186, "name": "pix 11", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/294b72dc2ca7b74ab3312059728cab22", "url": "https://tvsen6.aynaott.com/pix11/index.m3u8?e=1781099579&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=83db2a3bcf2ab42964868a4f72151e1e", "fifa": false}, {"id": 187, "name": "Rakuten Movies", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/22af43810a37af9a151f1e0a23adde63", "url": "https://0145451975a64b35866170fd2e8fa486.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-5987/master.m3u8", "fifa": false}, {"id": 188, "name": "Sports Fishing TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/fede32688e783945fed0473f3b0daf23", "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/eea68b79-bfe2-451e-a227-d637a5b9548a/manifest.m3u8", "fifa": false}, {"id": 189, "name": "TBS", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/45a768728c7514ba59d1a0ccf806e222", "url": "https://cdntv.tbs.seoul.kr/tbs/tbs_tv_web.smil/playlist.m3u8", "fifa": false}, {"id": 190, "name": "Travel XP", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/a676d2f5ddf6e5f978b3d51876dceecf", "url": "https://27c980761ff9437d929e64647afe183a.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-eu_TravelXP/playlist.m3u8", "fifa": false}, {"id": 191, "name": "Wild TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/597c839e577e81813e44812cedc50892", "url": "https://dfhsahpa45kk2.cloudfront.net/scheduler/scheduleMaster/476.m3u8", "fifa": false}, {"id": 192, "name": "World War TV", "cat": "Entertainment", "logo": "https://s3.aynaott.com/storage/1e7dc35fdb26ce3aca17b41fae1aa56f", "url": "https://aenetworks-worldwartv-rakuten.amagi.tv/playlist.m3u8", "fifa": false}, {"id": 193, "name": "3ABN Kids", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/76e36f75bf11c815a76c5622d627c814", "url": "https://tvsen6.aynaott.com/3abnkids/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=8d1a8e6b4055fb63982fe332375b2c2c", "fifa": false}, {"id": 194, "name": "BBC Cbeebies", "cat": "Kids", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/CBeebies_logo_2022.svg/200px-CBeebies_logo_2022.svg.png", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209622/index.m3u8", "fifa": false}, {"id": 195, "name": "BuddyStar HD", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770379038530.png", "url": "https://nomawnoijl.gpcdn.net/akash/buddystar/playlist.m3u8", "fifa": false}, {"id": 196, "name": "Cartoon Network", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/a89142109d049ae325fd1681b50bfffb", "url": "https://tvsen5.aynaott.com/cartoonnetwork/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=b3721343fcc5ec3fa4a731ee104e6a60", "fifa": false}, {"id": 197, "name": "Disney Channel", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/a0c74b576321da5aa33a69806401caf1", "url": "https://tvsen7.aynaott.com/disney/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=84150fe42dbafc59ed694c4f307b8e54", "fifa": false}, {"id": 198, "name": "Disney JR", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/31a070024b6516e3738baec70168f0b6", "url": "https://tvsen7.aynaott.com/disneyjr/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=9b024205756f37888dc02087f402484a", "fifa": false}, {"id": 199, "name": "Disney XD", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/f9b945284524683f1de8beb07ded8989", "url": "https://tvsen5.aynaott.com/disneyxd/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ffe8ea6bac9d4b2488c3cee36a6f78dc", "fifa": false}, {"id": 200, "name": "Family JR", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/ca9edd253c97a2c67fcd856f43a31702", "url": "https://tvsen5.aynaott.com/familyjr/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=4bfec1eb4f8c26bc32c194b2e8dbcb45", "fifa": false}, {"id": 201, "name": "Funny Junior HD", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770379573329.png", "url": "https://nomawnoijl.gpcdn.net/akash/funnyjunior/playlist.m3u8", "fifa": false}, {"id": 202, "name": "Gopal Bhar", "cat": "Kids", "logo": "https://upload.wikimedia.org/wikipedia/en/5/59/Gopal_Bhar_%28TV_series%29.jpg", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209611/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 203, "name": "Joy", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378874717.png", "url": "https://nomawnoijl.gpcdn.net/akash/joy/playlist.m3u8", "fifa": false}, {"id": 204, "name": "Kids Pang TV", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/bc2a021f901e4d1de4948f314536c1bf", "url": "https://newidco-kidspangtv-1-us.roku.wurl.tv/playlist.m3u8", "fifa": false}, {"id": 205, "name": "Kids Stars", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770381398090.png", "url": "https://nomawnoijl.gpcdn.net/akash/kidsstars/playlist.m3u8", "fifa": false}, {"id": 206, "name": "Lucky Family", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770381248531.png", "url": "https://nomawnoijl.gpcdn.net/akash/luckyfamily/playlist.m3u8", "fifa": false}, {"id": 207, "name": "Moonbug Kids", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/d9b8deaf735ee0954260c7b3b61f508d", "url": "https://tvsen6.aynaott.com/MoonbugKids/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=36e1a8a821b2a7123b1dc2091aa77544", "fifa": false}, {"id": 208, "name": "Motu Patlu", "cat": "Kids", "logo": "https://upload.wikimedia.org/wikipedia/en/7/72/Motu_Patlu_logo.jpg", "url": "https://live20.bozztv.com/giatvplayout7/giatv-209622/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 209, "name": "Nickelodeon", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/bb2375af2d1ff8666f2c24fbcec3c541", "url": "https://tvsen7.aynaott.com/nicklodean/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d19e5cfb062ac0bf9b542635e3cbf3ee", "fifa": false}, {"id": 210, "name": "Nickjr", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/921409bfe77e2e3d32492116bc22fa3e", "url": "https://tvsen5.aynaott.com/nickjr/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=74b9af8627b926888efc380b20bbc556", "fifa": false}, {"id": 211, "name": "Nicktoons", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/a130687320f6b07db4bc3729b9d5e96e", "url": "https://tvsen5.aynaott.com/nicktoons/index.m3u8?e=1781099582&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=55aac271262999a71ef844306ea779ed", "fifa": false}, {"id": 212, "name": "Nikki", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778083459294.png", "url": "https://nomawnoijl.gpcdn.net/akash/nikky/playlist.m3u8", "fifa": false}, {"id": 213, "name": "PBS Kids", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/e15930189f48df6d429c269bd1edea99", "url": "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8", "fifa": false}, {"id": 214, "name": "Smarty", "cat": "Kids", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770381107924.png", "url": "https://nomawnoijl.gpcdn.net/akash/smarty/playlist.m3u8", "fifa": false}, {"id": 215, "name": "Teen Nick", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/5739277278d596533abbacc60ea694be", "url": "https://tvsen7.aynaott.com/teennick/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=89caf3e3df3b0f0200ecb7740bcda389", "fifa": false}, {"id": 216, "name": "Tom & Jarry", "cat": "Kids", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tom_and_Jerry_logo.svg/200px-Tom_and_Jerry_logo.svg.png", "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8", "fifa": false}, {"id": 217, "name": "TVCARiB Kids & Teens", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/c6fde511a99e5134dbf12b77da386cb6", "url": "https://cdn.mycloudstream.io/hls/live/broadcast/nro19k2h/index.m3u8", "fifa": false}, {"id": 218, "name": "YTV", "cat": "Kids", "logo": "https://s3.aynaott.com/storage/d79d89851faee0823a1f2bed1a96e84d", "url": "https://tvsen6.aynaott.com/ytv/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=9c4fc7d7653b6e2ebf885f5b53cd7660", "fifa": false}, {"id": 219, "name": "\t USA TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/376b8483457b06dbc5b7b7b327a21ac6", "url": "https://tvsen6.aynaott.com/usa/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=1682252cdfc67a496a080ff7eda019ee", "fifa": false}, {"id": 220, "name": "Action Hollywood Movies", "cat": "English", "logo": "https://s3.aynaott.com/storage/baef6dd41c3ee6fabbb59bb8403cc1eb", "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8", "fifa": false}, {"id": 221, "name": "BRAVO", "cat": "English", "logo": "https://s3.aynaott.com/storage/7604a2c87620363fce86b73731b8035d", "url": "https://tvsen7.aynaott.com/bravo/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=7b318c3d6c9d0414adc97368d92f9658", "fifa": false}, {"id": 222, "name": "CBS TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/41536a676b99c1996efbccd8f65df42b", "url": "https://tvsen7.aynaott.com/cbs/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=436cd362d0c8d2c2a90ad5ae59f166e2", "fifa": false}, {"id": 223, "name": "CGTN Docu", "cat": "English", "logo": "https://s3.aynaott.com/storage/319020b844885cbabcd34e3f2f84d283", "url": "https://tvsen6.aynaott.com/cgtnDocumentary/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ea843dc82b439e6e27e23d807b775984", "fifa": false}, {"id": 224, "name": "CNBC TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/16a213d06e7362d97cb6085e70c9b5a2", "url": "https://tvsen6.aynaott.com/cnbc/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=cafed822c8a074a431788d72025be01c", "fifa": false}, {"id": 225, "name": "COMEDY CENTRAL", "cat": "English", "logo": "https://s3.aynaott.com/storage/211d55de947bdf03f5c18b7e30e0d98b", "url": "https://tvsen7.aynaott.com/comedycentral/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=c0d4baa383e1034bfb711fd2b4d20714", "fifa": false}, {"id": 226, "name": "COOKING TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/bf9792dc04cace6a25407b6304a35046", "url": "https://tvsen7.aynaott.com/cooking/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=6e3dfff8721a213561478db5f1fe33ab", "fifa": false}, {"id": 227, "name": "CP 24", "cat": "English", "logo": "https://s3.aynaott.com/storage/9f391e512f41bec54b163b83667da453", "url": "https://tvsen6.aynaott.com/cp24/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=f1a5566ef20da53b1a899d27fe9e52af", "fifa": false}, {"id": 228, "name": "Discovery Family", "cat": "English", "logo": "https://s3.aynaott.com/storage/3f7983c0bc7cacd206dd195a2eff6b10", "url": "https://tvsen5.aynaott.com/discoveryfamily/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=3d7e1f39626f98b0dbf2d94c0a441d6f", "fifa": false}, {"id": 229, "name": "DW Naws", "cat": "English", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/DW-LOGO-2012.svg/200px-DW-LOGO-2012.svg.png", "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8", "fifa": false}, {"id": 230, "name": "EPIX TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/c0b0c986890a8c88c3566d93e18cada6", "url": "https://tvsen7.aynaott.com/epix/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=26e9ae7d8af9ca6a0c616605817f6a5c", "fifa": false}, {"id": 231, "name": "Food Network", "cat": "English", "logo": "https://s3.aynaott.com/storage/582675c375dfa47c2d66e6639fcd2eac", "url": "https://tvsen6.aynaott.com/foodnetwork/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ee1aabb979195a3ae5c33e68db2e4a7a", "fifa": false}, {"id": 232, "name": "Fox 5", "cat": "English", "logo": "https://s3.aynaott.com/storage/4f6486854be670f7458ab60d0402ee42", "url": "https://tvsen6.aynaott.com/fox5/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=0e04f061b731769f4917f492d76691e4", "fifa": false}, {"id": 233, "name": "Fox business", "cat": "English", "logo": "https://s3.aynaott.com/storage/20e4602dd584784607e5eff3963cdde6", "url": "https://tvsen6.aynaott.com/foxbusiness/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=c3b4ac070c5e7b47b34cdcfb256476a8", "fifa": false}, {"id": 234, "name": "FX TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/f403cc315ca6269c5fcbf1875c95d329", "url": "https://tvsen7.aynaott.com/fx/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=19f40bf55cf6b4e4c515f31e96265e69", "fifa": false}, {"id": 235, "name": "HBO", "cat": "English", "logo": "https://s3.aynaott.com/storage/4a1291716680b5c095d33e106337bb04", "url": "https://tvsen5.aynaott.com/hbo/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=dc939f470fdcba5b903277ad746ba4fb", "fifa": false}, {"id": 236, "name": "HBO 2", "cat": "English", "logo": "https://s3.aynaott.com/storage/b64c028d8c0895ed81f3201d5979f7ba", "url": "https://tvsen7.aynaott.com/hbo2/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=741b988f99124d724a3e39415f7b3f8a", "fifa": false}, {"id": 237, "name": "HGTV", "cat": "English", "logo": "https://s3.aynaott.com/storage/be15ed692e22ad4b7dcb9d7251ce32a6", "url": "https://tvsen7.aynaott.com/hgtv/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=5a7e4766768c855c1c69b702ca4cf7ca", "fifa": false}, {"id": 238, "name": "Islam TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/5e74c3498e10b3cd2dadfe676681d387", "url": "https://tvsen6.aynaott.com/islam/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=ac16af188536e32a75689b1bcca1ad2e", "fifa": false}, {"id": 239, "name": "LAFF TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/ac4e2fb2e4eccd7417e5cc5b5a733369", "url": "https://tvsen7.aynaott.com/laff/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=5f78a52d65a149745ad2b37b6dd9451e", "fifa": false}, {"id": 240, "name": "LIFE TIME", "cat": "English", "logo": "https://s3.aynaott.com/storage/90258e6758834a12979d27097bee04a7", "url": "https://tvsen7.aynaott.com/lifetime/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=9de93935860b852041f268c9ddda04fd", "fifa": false}, {"id": 241, "name": "MSNBC News", "cat": "English", "logo": "https://s3.aynaott.com/storage/9a9ca715640d3dc227a0a74750ab17f2", "url": "https://tvsen6.aynaott.com/msnbc/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=f5eff763cebd786b2d6502c0c6c2379e", "fifa": false}, {"id": 242, "name": "MTV", "cat": "English", "logo": "https://s3.aynaott.com/storage/c0bfcdb40393eb5824907adaaa63a653", "url": "https://tvsen6.aynaott.com/mtv/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=b03ad735faa91154ce3e5aad65b5c2f2", "fifa": false}, {"id": 243, "name": "Nat Geo TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/2dce8297266bbc9c235c27119f914e1b", "url": "https://tvsen6.aynaott.com/natgeo/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=d7ef7a954aa782b401d65e5969c0c087", "fifa": false}, {"id": 244, "name": "RDS Social TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/f1fbcbc6cd325f5324eabb3bc733584e", "url": "https://tvsen6.aynaott.com/RDSSocialTV/index.m3u8?e=1781099580&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=438b24fab4c693851a349d8a6dba617c", "fifa": false}, {"id": 245, "name": "SYFY TV", "cat": "English", "logo": "https://s3.aynaott.com/storage/addd5f3c52326489e02df9aa14bb4ea5", "url": "https://tvsen7.aynaott.com/syfy/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=bd4db925ce211d1f298683c4d54dfc50", "fifa": false}, {"id": 246, "name": "TLC HD", "cat": "English", "logo": "https://s3.aynaott.com/storage/ba3c9fa1144bc65322f8ae3a1bb69cc9", "url": "https://tvsen6.aynaott.com/tlc_hd/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=0062b43a85b604b26a9f1ac88db47c4c", "fifa": false}, {"id": 247, "name": "Travel Channel", "cat": "English", "logo": "https://s3.aynaott.com/storage/a7f87f1e71905ee14429ed26abd29b2a", "url": "https://tvsen6.aynaott.com/travelxp/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=48593f005723de9e0c69668c88aa9b76", "fifa": false}, {"id": 248, "name": "WEATHER CHANNEL", "cat": "English", "logo": "https://s3.aynaott.com/storage/67e08c23033802b4443baf81d1b048bf", "url": "https://tvsen6.aynaott.com/TheWeatherChannel/index.m3u8?e=1781099581&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=050e9752910360e9d69060af9a802305", "fifa": false}, {"id": 249, "name": "Adventure Earth", "cat": "Documentary", "logo": "https://s3.aynaott.com/storage/13c04e44967d653c70eac9670b47fa5d", "url": "https://autentic-adventure-earth-1-eu.rakuten.wurl.tv/playlist.m3u8", "fifa": false}, {"id": 250, "name": "Insight", "cat": "Documentary", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/SBS_Insight_logo.svg/200px-SBS_Insight_logo.svg.png", "url": "https://insighttv-samsung-us.amagi.tv/playlist.m3u8", "fifa": false}, {"id": 251, "name": "REAL WILD", "cat": "Documentary", "logo": "https://upload.wikimedia.org/wikipedia/en/8/8a/Real_Wild_channel_logo.png", "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00426-littledotstudio-realwild-tcl/playlist.m3u8", "fifa": false}, {"id": 252, "name": "AL EKHBARIA", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Al_Ekhbariya_logo.svg/200px-Al_Ekhbariya_logo.svg.png", "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-al-ekhbaria/297b3ef1cd0633ad9cfba7473a686a06/index.m3u8", "fifa": false}, {"id": 253, "name": "AL ISTIQAMA", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Al-Istiqama.png", "url": "https://jmc-live.ercdn.net/alistiqama/alistiqama.m3u8", "fifa": false}, {"id": 254, "name": "AL QAMAR", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/commons/1/10/Al_Qamar_TV.jpg", "url": "https://streamer3.premio.link/alqamar/playlist.m3u8", "fifa": false}, {"id": 255, "name": "Arihant TV", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/en/1/1c/Aastha_TV.jpg", "url": "https://aasthaott.akamaized.net/110923/smil:arihant.smil/chunklist_b1928000.m3u8", "fifa": false}, {"id": 256, "name": "Channel Win", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/3458d0d9097a8283a94a13374bcbf5c7", "url": "https://cdn-4.pishow.tv/live/229/master.m3u8", "fifa": false}, {"id": 257, "name": "Deen TV", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/66ac3ae1e56001353b69bb5f63ebcc6e", "url": "https://tvsen7.aynaott.com/deen/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=415d68aca2dc0bce8e1529f504faac78", "fifa": false}, {"id": 258, "name": "Eman Channel", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/09d759c7bb93fa3fb76014c8936201ce", "url": "https://tvsen6.aynaott.com/eman/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=c36dda45899414ec244059cd920e5b48", "fifa": false}, {"id": 259, "name": "EWTN TV", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/EWTN_logo.svg/200px-EWTN_logo.svg.png", "url": "https://cdn3.wowza.com/1/ZVBYYXFLLzE0c3NC/Qk1FMURC/hls/qrpsvkxl/720/chunklist.m3u8", "fifa": false}, {"id": 260, "name": "MADANI TV", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/813fca9bc7df9a4810efe2eb87c57039", "url": "https://tvsen7.aynaott.com/MadaniTV/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=e6adc7e4589cd143711c578899a0be64", "fifa": false}, {"id": 261, "name": "Peace TV Urdu HD", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/5442b2655aca6398b26ba539f396565a", "url": "https://tvsen6.aynaott.com/PeaceTVUrduHD/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=f5e296e98dd17a784e22003f34f2ac5a", "fifa": false}, {"id": 262, "name": "QURAN RADIOTV SMC", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Quran_TV.png/200px-Quran_TV.png", "url": "https://live.kwikmotion.com/smcquranlive/quranradiolive/playlist.m3u8", "fifa": false}, {"id": 263, "name": "RTV Islam", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/f00eda9194eb13e8ef1d1387889173bf", "url": "https://protokolldns.xyz/rtvislamweb554/index.m3u8", "fifa": false}, {"id": 264, "name": "TAQBEER", "cat": "Religious", "logo": "https://s3.aynaott.com/storage/5b8848e0ec2d5cd133fadef42317dec5", "url": "https://tvsen7.aynaott.com/takbeer/index.m3u8?e=1781099583&u=78be6644-0a65-48ec-81a4-089ac65a2619&token=44e93fa2e346a3f71b826258f8c7181f", "fifa": false}, {"id": 265, "name": "Unknown", "cat": "Religious", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Saudi_Sunnah_TV_Logo.svg/200px-Saudi_Sunnah_TV_Logo.svg.png", "url": "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8", "fifa": false}, {"id": 266, "name": "Al Quran", "cat": "Infotainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778086065071.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1713/output/index.m3u8", "fifa": false}, {"id": 267, "name": "Amazon SAT", "cat": "Infotainment", "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Amazon.com-Logo.svg/200px-Amazon.com-Logo.svg.png", "url": "https://amazonsat.brasilstream.com.br/hls/amazonsat/index.m3u8", "fifa": false}, {"id": 268, "name": "Delicious", "cat": "Infotainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778086478755.png", "url": "https://nomawnoijl.gpcdn.net/akash/delicious/playlist.m3u8", "fifa": false}, {"id": 269, "name": "Islamic TV", "cat": "Infotainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1772728412891.png", "url": "https://owrcovcrpy.gpcdn.net/bpk-tv/1724/output/index.m3u8", "fifa": false}, {"id": 270, "name": "Luxel HD", "cat": "Infotainment", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770378560772.png", "url": "https://nomawnoijl.gpcdn.net/akash/luxell/playlist.m3u8", "fifa": false}, {"id": 271, "name": "Travel XP English", "cat": "Infotainment", "logo": "https://upload.wikimedia.org/wikipedia/en/0/09/TravelXP_logo.jpg", "url": "https://travelxp-travelxp-1-eu.rakuten.wurl.tv/playlist.m3u8", "fifa": false}, {"id": 272, "name": "Travel XP English NZ", "cat": "Infotainment", "logo": "https://upload.wikimedia.org/wikipedia/en/0/09/TravelXP_logo.jpg", "url": "https://travelxp-travelxp-1-nz.samsung.wurl.tv/playlist.m3u8", "fifa": false}, {"id": 273, "name": "Baallee", "cat": "Music", "logo": "https://upload.wikimedia.org/wikipedia/en/0/0a/Balle_Balle_TV.jpg", "url": "https://mcncdndigital.com/balleballetv/tracks-v1a1/mono.ts.m3u8", "fifa": false}, {"id": 274, "name": "Party Universe", "cat": "Music", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778083145889.png", "url": "https://nomawnoijl.gpcdn.net/akash/partyuniverse/playlist.m3u8", "fifa": false}, {"id": 275, "name": "Power Turk", "cat": "Music", "logo": "https://s3.aynaott.com/storage/c4f27e64c99b50629e7021b99ac9387a", "url": "https://livetv.powerapp.com.tr/powerturkTV/powerturkhd.smil/playlist.m3u8", "fifa": false}, {"id": 276, "name": "AccuWeather", "cat": "Weather", "logo": "https://s3.aynaott.com/storage/21992f5e8529a9d2a94b6edf917dbd8f", "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8", "fifa": false}, {"id": 277, "name": "Discover Pikstan", "cat": "Weather", "logo": "https://s3.aynaott.com/storage/1b9208802bbf0cc01f1e8319b0ec633d", "url": "https://livecdn.live247stream.com/discoverpakistan/web/playlist.m3u8", "fifa": false}, {"id": 278, "name": "Fox Weather", "cat": "Weather", "logo": "https://s3.aynaott.com/storage/6dd20ecde19ea3f6b6cf6c040701973e", "url": "https://247wlive.foxweather.com/stream/index.m3u8", "fifa": false}, {"id": 279, "name": "Sky News Weather", "cat": "Weather", "logo": "https://s3.aynaott.com/storage/78b7ab973209ec06346cf8acfd8544cd", "url": "https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8", "fifa": false}, {"id": 280, "name": "Weather SPY", "cat": "Weather", "logo": "https://s3.aynaott.com/storage/b0bdea4df810e2d46f689cbb6c990c91", "url": "https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8", "fifa": false}, {"id": 281, "name": "ABN", "cat": "Movies", "logo": "https://s3.aynaott.com/storage/9882913a8d68aa99c0501b64749d6320", "url": "https://mediaserver.abnvideos.com/streams/abnurdu.m3u8", "fifa": false}, {"id": 282, "name": "Awaaz India", "cat": "Latest", "logo": "https://s3.aynaott.com/storage/6f17785db48e7b5fb68b7d441ad3ad10", "url": "http://awaazindia.livebox.co.in/AwaazIndaTVhls/Live.m3u8", "fifa": false}, {"id": 283, "name": "Cineedge HD", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770347851305.png", "url": "https://nomawnoijl.gpcdn.net/akash/cineedge/playlist.m3u8", "fifa": false}, {"id": 284, "name": "Court TV", "cat": "Latest", "logo": "https://s3.aynaott.com/storage/7deacf82c7f75cf7aaee5e0935c3d2c8", "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01438-ewscrippscompan-courttv-tablo/playlist.m3u8", "fifa": false}, {"id": 285, "name": "Crimes", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380126540.png", "url": "https://nomawnoijl.gpcdn.net/akash/crimes/playlist.m3u8", "fifa": false}, {"id": 286, "name": "Deshi TV (720p)", "cat": "Unknown", "logo": "", "url": "https://deshitv.deshitv24.net/live/myStream/playlist.m3u8", "fifa": false}, {"id": 287, "name": "Intelligence", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380460488.png", "url": "https://nomawnoijl.gpcdn.net/akash/intelligence/playlist.m3u8", "fifa": false}, {"id": 288, "name": "Iran Press", "cat": "Latest", "logo": "https://s3.aynaott.com/storage/201491b7327fffb27d78f800dd9f42d2", "url": "https://live.presstv.ir/hls/presstv_5_482/index.m3u8", "fifa": false}, {"id": 289, "name": "Originals", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1778085327477.png", "url": "https://nomawnoijl.gpcdn.net/akash/originals/playlist.m3u8", "fifa": false}, {"id": 290, "name": "Persiana Korea", "cat": "Movies", "logo": "https://s3.aynaott.com/storage/f24e50516ccf6b3e94a4ca749ccb3533", "url": "https://korhls.persiana.live/hls/stream.m3u8", "fifa": false}, {"id": 291, "name": "Screem", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770312098339.png", "url": "https://nomawnoijl.gpcdn.net/akash/screem/playlist.m3u8", "fifa": false}, {"id": 292, "name": "Superrix HD", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770348388925.png", "url": "https://nomawnoijl.gpcdn.net/akash/superrix/playlist.m3u8", "fifa": false}, {"id": 293, "name": "True Stories", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770380306806.png", "url": "https://nomawnoijl.gpcdn.net/akash/truestories/playlist.m3u8", "fifa": false}, {"id": 294, "name": "Uniques HD", "cat": "Movies", "logo": "https://tstatic.akash-go.com/cms-ui/images/custom-content/1770347327658.png", "url": "https://nomawnoijl.gpcdn.net/akash/uniques/playlist.m3u8", "fifa": false}, {"id": 295, "name": "YRF Music HD", "cat": "Unknown", "logo": "", "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01412-xiaomiasia-yrfmusic-xiaomi/playlist.m3u8", "fifa": false}];
+var CH = [];
+var editingId = null;
+var currentFilter = 'All';
 
-// Load saved channels
+// Load channels from localStorage or use defaults
 (function(){
-  try{var s=localStorage.getItem('bf_ch');if(s)CH=JSON.parse(s);}catch(e){}
-  CH.forEach(function(c,i){if(!c.id)c.id=i+1;});
+  try {
+    var saved = localStorage.getItem('bf_ch');
+    CH = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_CHANNELS));
+  } catch(e) {
+    CH = JSON.parse(JSON.stringify(DEFAULT_CHANNELS));
+  }
+  CH.forEach(function(c,i){ if(!c.id) c.id = i+1; });
 })();
 
-function save(){try{localStorage.setItem('bf_ch',JSON.stringify(CH));}catch(e){}}
+function saveChannels(){
+  try { localStorage.setItem('bf_ch', JSON.stringify(CH)); } catch(e){}
+}
+
+// Site settings
+var siteSettings = {};
+(function(){
+  try { siteSettings = JSON.parse(localStorage.getItem('bf_settings') || '{}'); } catch(e){}
+})();
+
+function saveSettings(){ try { localStorage.setItem('bf_settings', JSON.stringify(siteSettings)); } catch(e){} }
 
 // ══ AUTH ══
-var D_USER='admin', D_PASS=btoa('bongoflex2026');
-function getCreds(){try{return JSON.parse(localStorage.getItem('bf_creds')||'null');}catch(e){return null;}}
+var D_USER = 'admin', D_PASS = btoa('bongoflex2026');
+
+function getCreds(){
+  try { return JSON.parse(localStorage.getItem('bf_creds') || 'null'); } catch(e){ return null; }
+}
 
 function doLogin(){
-  var u=document.getElementById('lu').value.trim();
-  var p=document.getElementById('lp').value;
-  var creds=getCreds()||{user:D_USER,pass:D_PASS};
-  var lk=JSON.parse(sessionStorage.getItem('bf_lk')||'{"n":0,"t":0}');
+  var u = document.getElementById('lu').value.trim();
+  var p = document.getElementById('lp').value;
+  var creds = getCreds() || {user: D_USER, pass: D_PASS};
+  var lk = JSON.parse(sessionStorage.getItem('bf_lk') || '{"n":0,"t":0}');
 
-  if(lk.t>Date.now()){toast('🔒 লক। অপেক্ষা করুন');return;}
+  if(lk.t > Date.now()){
+    showToast('🔒 লক! অপেক্ষা করুন', 'error');
+    return;
+  }
 
-  if(u===creds.user && btoa(p)===creds.pass){
-    sessionStorage.setItem('bf_sess','1');
-    showAdmin();
-  }else{
-    lk.n=(lk.n||0)+1;
-    if(lk.n>=5){lk.t=Date.now()+60000;lk.n=0;}
-    sessionStorage.setItem('bf_lk',JSON.stringify(lk));
-    document.getElementById('lp').value='';
+  if(u === creds.user && btoa(p) === creds.pass){
+    sessionStorage.setItem('bf_sess', '1');
+    showAdminPanel();
+  } else {
+    lk.n = (lk.n || 0) + 1;
+    if(lk.n >= 5){ lk.t = Date.now() + 60000; lk.n = 0; }
+    sessionStorage.setItem('bf_lk', JSON.stringify(lk));
+    document.getElementById('lp').value = '';
     ['lu','lp'].forEach(function(id){
-      var el=document.getElementById(id);
+      var el = document.getElementById(id);
       el.classList.add('shake');
-      setTimeout(function(){el.classList.remove('shake');},400);
+      setTimeout(function(){ el.classList.remove('shake'); }, 400);
     });
-    var left=5-lk.n;
-    document.getElementById('lg-err').textContent=
-      lk.t>Date.now()?'🔒 অনেকবার ভুল! ৬০ সেকেন্ড অপেক্ষা করুন':
-      (left<=2?'❌ আর '+left+' বার ভুল হলে লক হবে':'❌ ইউজারনেম বা পাসওয়ার্ড ভুল!');
-    if(lk.t>Date.now())tickLock();
+    var left = 5 - lk.n;
+    var msg = lk.t > Date.now()
+      ? '🔒 অনেকবার ভুল! ৬০ সেকেন্ড অপেক্ষা করুন'
+      : (left <= 2 ? '❌ সতর্কতা: আর ' + left + ' বার চেষ্টা করতে পারবেন' : '❌ ইউজারনেম বা পাসওয়ার্ড ভুল!');
+    document.getElementById('lg-err').textContent = msg;
+    if(lk.t > Date.now()) tickLock();
   }
 }
 
 function tickLock(){
-  var lk=JSON.parse(sessionStorage.getItem('bf_lk')||'{"t":0}');
-  var el=document.getElementById('lg-lock'),btn=document.getElementById('lg-btn');
-  if(!el)return;
-  if(lk.t>Date.now()){
-    var s=Math.ceil((lk.t-Date.now())/1000);
-    el.style.display='block';el.textContent='⏳ '+s+' সেকেন্ড';
-    btn.disabled=true;setTimeout(tickLock,1000);
-  }else{el.style.display='none';btn.disabled=false;}
+  var lk = JSON.parse(sessionStorage.getItem('bf_lk') || '{"t":0}');
+  var el = document.getElementById('lg-lock'), btn = document.getElementById('lg-btn');
+  if(!el) return;
+  if(lk.t > Date.now()){
+    var s = Math.ceil((lk.t - Date.now()) / 1000);
+    el.style.display = 'block'; el.textContent = '⏳ ' + s + ' সেকেন্ড অপেক্ষা করুন';
+    btn.disabled = true; setTimeout(tickLock, 1000);
+  } else {
+    el.style.display = 'none'; btn.disabled = false;
+  }
 }
 
-function showAdmin(){
-  // Hide login completely
-  var login=document.getElementById('pg-login');
-  login.style.display='none';
-  // Show admin
-  var admin=document.getElementById('pg-admin');
-  admin.style.cssText='display:flex !important;flex-direction:column;min-height:100vh';
-  admin.style.flexDirection='column';
-  // Set username
-  var creds=getCreds()||{user:D_USER};
-  document.getElementById('tb-user').textContent='👤 '+creds.user;
-  render();
+function showAdminPanel(){
+  document.getElementById('pg-login').style.display = 'none';
+  var admin = document.getElementById('pg-admin');
+  admin.style.display = 'flex';
+  admin.style.flexDirection = 'column';
+  var creds = getCreds() || {user: D_USER};
+  document.getElementById('tb-user').innerHTML = '👤 <strong>' + hesc(creds.user) + '</strong>';
+  // Load FIFA banner settings
+  if(siteSettings.fifaTitle)
+    document.getElementById('fifa-title').value = siteSettings.fifaTitle;
+  if(siteSettings.fifaSubtitle)
+    document.getElementById('fifa-subtitle').value = siteSettings.fifaSubtitle;
+  renderList();
 }
 
 function doLogout(){
-  if(!confirm('লগআউট করবেন?'))return;
+  if(!confirm('লগআউট করবেন?')) return;
   sessionStorage.removeItem('bf_sess');
   location.reload();
 }
 
-function toggleEye(btn){
-  var i=document.getElementById('lp');
-  i.type=i.type==='password'?'text':'password';
-  btn.textContent=i.type==='password'?'👁️':'🙈';
+function toggleEye(){
+  var inp = document.getElementById('lp');
+  var btn = document.getElementById('eye-btn');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
 }
 
 function changePw(){
-  var o=document.getElementById('pw-o').value;
-  var n=document.getElementById('pw-n').value;
-  var n2=document.getElementById('pw-n2').value;
-  var creds=getCreds()||{user:D_USER,pass:D_PASS};
-  var e=document.getElementById('pw-err');
-  if(btoa(o)!==creds.pass){e.textContent='❌ বর্তমান পাসওয়ার্ড ভুল!';return;}
-  if(n.length<6){e.textContent='❌ কমপক্ষে ৬ অক্ষর দিন!';return;}
-  if(n!==n2){e.textContent='❌ মিলছে না!';return;}
-  localStorage.setItem('bf_creds',JSON.stringify({user:creds.user,pass:btoa(n)}));
-  hideOv('ov-pw');e.textContent='';
-  ['pw-o','pw-n','pw-n2'].forEach(function(id){document.getElementById(id).value='';});
-  toast('✅ পাসওয়ার্ড পরিবর্তন হয়েছে!');
+  var o = document.getElementById('pw-old').value;
+  var n = document.getElementById('pw-new').value;
+  var n2 = document.getElementById('pw-new2').value;
+  var creds = getCreds() || {user: D_USER, pass: D_PASS};
+  var errEl = document.getElementById('pw-err');
+  if(btoa(o) !== creds.pass){ errEl.textContent = '❌ বর্তমান পাসওয়ার্ড ভুল!'; return; }
+  if(n.length < 6){ errEl.textContent = '❌ কমপক্ষে ৬ অক্ষর দিন!'; return; }
+  if(n !== n2){ errEl.textContent = '❌ পাসওয়ার্ড দুটি মিলছে না!'; return; }
+  localStorage.setItem('bf_creds', JSON.stringify({user: creds.user, pass: btoa(n)}));
+  closeModal('ov-pw');
+  errEl.textContent = '';
+  ['pw-old','pw-new','pw-new2'].forEach(function(id){ document.getElementById(id).value = ''; });
+  showToast('✅ পাসওয়ার্ড পরিবর্তন হয়েছে!', 'success');
 }
 
-// ══ FILTER / RENDER ══
-var filt='All', editId=null;
-
-function setF(f,el){
-  filt=f;
-  document.querySelectorAll('.flt').forEach(function(b){b.classList.remove('on');});
-  el.classList.add('on');render();
+// ══ FILTER & RENDER ══
+function setFilter(f, el){
+  currentFilter = f;
+  document.querySelectorAll('.chip').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  renderList();
 }
 
 function getFiltered(){
-  var q=document.getElementById('srch').value.toLowerCase();
+  var q = document.getElementById('srch').value.toLowerCase();
   return CH.filter(function(c){
-    var mf=filt==='All'||(filt==='FIFA'?c.fifa:c.cat===filt);
-    var mq=!q||c.name.toLowerCase().indexOf(q)>-1||(c.cat||'').toLowerCase().indexOf(q)>-1;
-    return mf&&mq;
+    var mf = currentFilter === 'All' || (currentFilter === 'FIFA' ? c.fifa : c.cat === currentFilter);
+    var mq = !q || c.name.toLowerCase().indexOf(q) > -1 || (c.cat || '').toLowerCase().indexOf(q) > -1;
+    return mf && mq;
   });
 }
 
-function render(){
-  var list=getFiltered();
-  var fifa=CH.filter(function(c){return c.fifa;}).length;
-  var cats=[];CH.forEach(function(c){if(cats.indexOf(c.cat)<0)cats.push(c.cat);});
-  document.getElementById('stats').innerHTML=
-    '<div class="stat"><div class="stat-n">'+CH.length+'</div><div class="stat-l">মোট</div></div>'+
-    '<div class="stat"><div class="stat-n">'+fifa+'</div><div class="stat-l">⚽ FIFA</div></div>'+
-    '<div class="stat"><div class="stat-n">'+cats.length+'</div><div class="stat-l">ক্যাটাগরি</div></div>'+
-    '<div class="stat"><div class="stat-n">'+list.length+'</div><div class="stat-l">দেখানো</div></div>';
+function renderList(){
+  var list = getFiltered();
+  var fifaCount = CH.filter(function(c){ return c.fifa; }).length;
+  var cats = [];
+  CH.forEach(function(c){ if(cats.indexOf(c.cat) < 0) cats.push(c.cat); });
 
-  var el=document.getElementById('ch-list');
-  if(!list.length){el.innerHTML='<div class="empty">📭 কোনো চ্যানেল নেই</div>';return;}
-  el.innerHTML=list.map(function(c,i){
-    var logo=c.logo||'https://img.icons8.com/color/96/tv.png';
-    return '<div class="ch-card'+(c.fifa?' hl':'')+(editId===c.id?' sel':'')+'" id="cd-'+c.id+'">'+
-      '<div class="ch-n">'+(i+1)+'</div>'+
-      '<div class="ch-logo"><img src="'+logo+'" onerror="this.src='https://img.icons8.com/color/96/tv.png'"/></div>'+
-      '<div class="ch-info">'+
-        '<div class="ch-nm">'+hesc(c.name)+'</div>'+
-        '<div class="ch-meta">'+
-          '<span class="cpill '+(c.cat||'')+'">'+hesc(c.cat||'?')+'</span>'+
-          (c.fifa?'<span class="fpill">⚽ FIFA</span>':'')+
-        '</div>'+
-      '</div>'+
-      '<div class="ch-acts">'+
-        '<button class="ic" onclick="editCh('+c.id+')" title="এডিট">✏️</button>'+
-        '<button class="ic'+(c.fifa?' hl-on':'')+'" onclick="togFifa('+c.id+')">'+(c.fifa?'⭐':'☆')+'</button>'+
-        '<button class="ic del" onclick="delCh('+c.id+')" title="ডিলিট">🗑️</button>'+
-      '</div>'+
+  document.getElementById('stat-total').textContent = CH.length;
+  document.getElementById('stat-fifa').textContent = fifaCount;
+  document.getElementById('stat-cats').textContent = cats.length;
+  document.getElementById('stat-showing').textContent = list.length;
+
+  var el = document.getElementById('ch-list');
+  if(!list.length){
+    el.innerHTML = '<div class="empty-list"><div class="big">📭</div>কোনো চ্যানেল পাওয়া যায়নি</div>';
+    return;
+  }
+
+  el.innerHTML = list.map(function(c, i){
+    var logo = c.logo || 'https://img.icons8.com/color/96/tv.png';
+    var isEditing = editingId === c.id;
+    return '<div class="ch-item' + (c.fifa ? ' fifa-hl' : '') + (isEditing ? ' editing' : '') + '" id="ci-' + c.id + '">' +
+      '<div class="ch-num">' + (i + 1) + '</div>' +
+      '<div class="ch-logo-box"><img src="' + hesc(logo) + '" loading="lazy" onerror="this.src=\'https://img.icons8.com/color/96/tv.png\'"/></div>' +
+      '<div class="ch-info">' +
+        '<div class="ch-name">' + hesc(c.name) + '</div>' +
+        '<div class="ch-tags">' +
+          '<span class="tag ' + hesc(c.cat || '') + '">' + hesc(c.cat || 'Unknown') + '</span>' +
+          (c.fifa ? '<span class="tag fifa-tag">⚽ FIFA</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="ch-actions">' +
+        '<button class="action-btn edit-btn" onclick="openEditModal(' + c.id + ')" title="এডিট করুন">✏️</button>' +
+        '<button class="action-btn fifa-btn" onclick="toggleFifa(' + c.id + ')" title="FIFA হাইলাইট">' + (c.fifa ? '⭐' : '☆') + '</button>' +
+        '<button class="action-btn del-btn" onclick="deleteChannel(' + c.id + ')" title="ডিলিট করুন">🗑️</button>' +
+      '</div>' +
     '</div>';
   }).join('');
 }
 
-function hesc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ══ FORM ══
-function resetForm(){
-  editId=null;
-  document.getElementById('f-name').value='';
-  document.getElementById('f-cat').value='Sports';
-  document.getElementById('f-url').value='';
-  document.getElementById('f-logo').value='';
-  document.getElementById('f-fifa').checked=false;
-  document.getElementById('lp-prev').src='';
-  document.getElementById('f-title').textContent='➕ নতুন চ্যানেল';
-  document.getElementById('f-sub').textContent='➕ যোগ করুন';
-  document.getElementById('f-can').style.display='none';
-  render();
+function hesc(s){
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function editCh(id){
-  var c=CH.find(function(x){return x.id===id;});if(!c)return;
-  editId=id;
-  document.getElementById('f-name').value=c.name||'';
-  document.getElementById('f-cat').value=c.cat||'Sports';
-  document.getElementById('f-url').value=c.url||'';
-  document.getElementById('f-logo').value=c.logo||'';
-  document.getElementById('f-fifa').checked=!!c.fifa;
-  document.getElementById('lp-prev').src=c.logo||'';
-  document.getElementById('f-title').textContent='✏️ এডিট';
-  document.getElementById('f-sub').textContent='💾 আপডেট';
-  document.getElementById('f-can').style.display='inline-flex';
-  if(window.innerWidth<=720)window.scrollTo({top:0,behavior:'smooth'});
-  render();
+// ══ ADD CHANNEL FORM ══
+function resetForm(){
+  editingId = null;
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-cat').value = 'Sports';
+  document.getElementById('f-url').value = '';
+  document.getElementById('f-logo').value = '';
+  document.getElementById('f-fifa').checked = false;
+  document.getElementById('logo-prev').src = '';
+  document.getElementById('form-header').textContent = '➕ নতুন চ্যানেল যোগ করুন';
+  document.getElementById('f-submit').textContent = '➕ চ্যানেল যোগ করুন';
+  document.getElementById('f-cancel').style.display = 'none';
+  renderList();
 }
 
 function submitForm(){
-  var name=document.getElementById('f-name').value.trim();
-  var cat=document.getElementById('f-cat').value;
-  var url=document.getElementById('f-url').value.trim();
-  var logo=document.getElementById('f-logo').value.trim();
-  var fifa=document.getElementById('f-fifa').checked;
-  if(!name){toast('⚠️ নাম দিন!');return;}
-  if(!url){toast('⚠️ URL দিন!');return;}
-  if(editId!==null){
-    var idx=CH.findIndex(function(c){return c.id===editId;});
-    if(idx>-1)CH[idx]=Object.assign(CH[idx],{name:name,cat:cat,url:url,logo:logo,fifa:fifa});
-    toast('✅ আপডেট হয়েছে!');
-  }else{
-    var nid=Math.max.apply(null,[0].concat(CH.map(function(c){return c.id||0;})))+1;
-    var nc={id:nid,name:name,cat:cat,url:url,logo:logo,fifa:fifa};
-    fifa?CH.unshift(nc):CH.push(nc);
-    toast('✅ চ্যানেল যোগ হয়েছে!');
+  var name = document.getElementById('f-name').value.trim();
+  var cat = document.getElementById('f-cat').value;
+  var url = document.getElementById('f-url').value.trim();
+  var logo = document.getElementById('f-logo').value.trim();
+  var fifa = document.getElementById('f-fifa').checked;
+
+  if(!name){ showToast('⚠️ চ্যানেলের নাম দিন!', 'error'); return; }
+  if(!url){ showToast('⚠️ Stream URL দিন!', 'error'); return; }
+
+  var newId = Math.max.apply(null, [0].concat(CH.map(function(c){ return c.id || 0; }))) + 1;
+  var newCh = {id: newId, name: name, cat: cat, url: url, logo: logo, fifa: fifa};
+  if(fifa) CH.unshift(newCh); else CH.push(newCh);
+  saveChannels();
+  resetForm();
+  showToast('✅ "' + name + '" যোগ হয়েছে!', 'success');
+}
+
+// ══ EDIT MODAL ══
+function openEditModal(id){
+  var c = CH.find(function(x){ return x.id === id; });
+  if(!c) return;
+  editingId = id;
+  document.getElementById('edit-name').value = c.name || '';
+  document.getElementById('edit-cat').value = c.cat || 'Sports';
+  document.getElementById('edit-url').value = c.url || '';
+  document.getElementById('edit-logo').value = c.logo || '';
+  document.getElementById('edit-fifa').checked = !!c.fifa;
+  document.getElementById('edit-logo-prev').src = c.logo || '';
+  document.getElementById('edit-err').textContent = '';
+  openModal('ov-edit');
+  renderList();
+}
+
+function saveEdit(){
+  var name = document.getElementById('edit-name').value.trim();
+  var cat = document.getElementById('edit-cat').value;
+  var url = document.getElementById('edit-url').value.trim();
+  var logo = document.getElementById('edit-logo').value.trim();
+  var fifa = document.getElementById('edit-fifa').checked;
+  var errEl = document.getElementById('edit-err');
+
+  if(!name){ errEl.textContent = '⚠️ চ্যানেলের নাম দিন!'; return; }
+  if(!url){ errEl.textContent = '⚠️ Stream URL দিন!'; return; }
+
+  var idx = CH.findIndex(function(c){ return c.id === editingId; });
+  if(idx > -1){
+    CH[idx] = Object.assign(CH[idx], {name: name, cat: cat, url: url, logo: logo, fifa: fifa});
   }
-  save();resetForm();
+  saveChannels();
+  editingId = null;
+  closeModal('ov-edit');
+  renderList();
+  showToast('✅ "' + name + '" আপডেট হয়েছে!', 'success');
 }
 
-function delCh(id){
-  var c=CH.find(function(x){return x.id===id;});if(!c)return;
-  if(!confirm('"'+c.name+'" ডিলিট করবেন?'))return;
-  CH=CH.filter(function(x){return x.id!==id;});
-  if(editId===id)resetForm();
-  save();render();toast('🗑️ ডিলিট হয়েছে!');
+function deleteChannel(id){
+  var c = CH.find(function(x){ return x.id === id; });
+  if(!c) return;
+  if(!confirm('"' + c.name + '" ডিলিট করবেন?\n\nএই কাজটি পূর্বাবস্থায় ফেরানো যাবে না!')) return;
+  CH = CH.filter(function(x){ return x.id !== id; });
+  if(editingId === id) editingId = null;
+  saveChannels();
+  renderList();
+  showToast('🗑️ "' + c.name + '" ডিলিট হয়েছে!', 'info');
 }
 
-function togFifa(id){
-  var c=CH.find(function(x){return x.id===id;});if(!c)return;
-  c.fifa=!c.fifa;save();render();
-  toast(c.fifa?'⭐ FIFA চালু!':'☆ বন্ধ!');
+function toggleFifa(id){
+  var c = CH.find(function(x){ return x.id === id; });
+  if(!c) return;
+  c.fifa = !c.fifa;
+  saveChannels();
+  renderList();
+  showToast(c.fifa ? '⭐ FIFA হাইলাইট চালু!' : '☆ FIFA হাইলাইট বন্ধ!', c.fifa ? 'info' : '');
 }
 
 function bulkFifa(state){
-  var names=document.getElementById('bulk-in').value.split(',')
-    .map(function(s){return s.trim().toLowerCase();}).filter(Boolean);
-  if(!names.length){toast('⚠️ নাম লিখুন');return;}
-  var n=0;
+  var names = document.getElementById('bulk-names').value
+    .split(',').map(function(s){ return s.trim().toLowerCase(); }).filter(Boolean);
+  if(!names.length){ showToast('⚠️ চ্যানেলের নাম লিখুন', 'error'); return; }
+  var n = 0;
   CH.forEach(function(c){
-    if(names.some(function(nm){return c.name.toLowerCase().indexOf(nm)>-1;})){c.fifa=state;n++;}
+    if(names.some(function(nm){ return c.name.toLowerCase().indexOf(nm) > -1; })){
+      c.fifa = state; n++;
+    }
   });
-  save();render();toast('✅ '+n+' টি চ্যানেল '+(state?'হাইলাইট':'নরমাল')+' হয়েছে');
+  saveChannels(); renderList();
+  showToast('✅ ' + n + ' টি চ্যানেল ' + (state ? 'হাইলাইট' : 'নরমাল') + ' হয়েছে!', 'success');
 }
 
+function saveFifaBanner(){
+  siteSettings.fifaTitle = document.getElementById('fifa-title').value.trim();
+  siteSettings.fifaSubtitle = document.getElementById('fifa-subtitle').value.trim();
+  saveSettings();
+  showToast('✅ FIFA ব্যানার সেভ হয়েছে!', 'success');
+}
+
+function openSiteSettings(){
+  if(siteSettings.siteTitle) document.getElementById('st-title').value = siteSettings.siteTitle;
+  if(siteSettings.tagline) document.getElementById('st-tagline').value = siteSettings.tagline;
+  if(siteSettings.footer) document.getElementById('st-footer').value = siteSettings.footer;
+  if(siteSettings.countText) document.getElementById('st-count').value = siteSettings.countText;
+  openModal('ov-settings');
+}
+
+function saveSiteSettings(){
+  siteSettings.siteTitle = document.getElementById('st-title').value.trim();
+  siteSettings.tagline = document.getElementById('st-tagline').value.trim();
+  siteSettings.footer = document.getElementById('st-footer').value.trim();
+  siteSettings.countText = document.getElementById('st-count').value.trim();
+  saveSettings();
+  closeModal('ov-settings');
+  showToast('✅ সাইট সেটিংস সেভ হয়েছে!', 'success');
+}
+
+// ══ IMPORT ══
 function doImport(replace){
-  try{
-    var raw=document.getElementById('imp-area').value.trim();
-    var data=JSON.parse(raw);
-    if(!Array.isArray(data)){toast('⚠️ Array দিন');return;}
-    var mx=Math.max.apply(null,[0].concat(CH.map(function(c){return c.id||0;})));
-    var imp=data.map(function(c,i){return {
-      id:replace?(i+1):(mx+i+1),
-      name:c.name||'Unnamed',cat:c.category||c.cat||'Unknown',
-      url:c.url||'',logo:c.logo||'',fifa:!!c.fifa
-    };});
-    if(replace){if(!confirm(imp.length+' টি দিয়ে বদলাবেন?'))return;CH=imp;}
-    else CH.push.apply(CH,imp);
-    document.getElementById('imp-area').value='';
-    save();render();toast('✅ '+imp.length+' টি ইম্পোর্ট হয়েছে!');
-  }catch(e){toast('❌ JSON ভুল');}
+  try {
+    var raw = document.getElementById('imp-area').value.trim();
+    var data = JSON.parse(raw);
+    if(!Array.isArray(data)){ showToast('⚠️ JSON Array দিন', 'error'); return; }
+    var mx = Math.max.apply(null, [0].concat(CH.map(function(c){ return c.id || 0; })));
+    var imp = data.map(function(c, i){
+      return {
+        id: replace ? (i + 1) : (mx + i + 1),
+        name: c.name || 'Unnamed', cat: c.category || c.cat || 'Unknown',
+        url: c.url || '', logo: c.logo || '', fifa: !!c.fifa
+      };
+    });
+    if(replace){
+      if(!confirm(imp.length + ' টি চ্যানেল দিয়ে সব বদলাবেন?')) return;
+      CH = imp;
+    } else {
+      CH.push.apply(CH, imp);
+    }
+    document.getElementById('imp-area').value = '';
+    saveChannels(); renderList();
+    showToast('✅ ' + imp.length + ' টি চ্যানেল ইম্পোর্ট হয়েছে!', 'success');
+  } catch(e){ showToast('❌ JSON ফরম্যাট ভুল!', 'error'); }
 }
 
-function buildCode(){
-  var fifa=CH.filter(function(c){return c.fifa;});
-  var rest=CH.filter(function(c){return !c.fifa;});
-  var ord=fifa.concat(rest);
-  var rows=ord.map(function(c,i){
-    function e(s){return String(s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
-    return '  {id:'+(i+1)+',name:"'+e(c.name)+'",cat:"'+e(c.cat)+'",logo:"'+e(c.logo)+'",url:"'+e(c.url)+'",fifa:'+(c.fifa?'true':'false')+'}';
+// ══ EXPORT ══
+function buildChannelsCode(){
+  // FIFA first, then rest
+  var fifa = CH.filter(function(c){ return c.fifa; });
+  var rest = CH.filter(function(c){ return !c.fifa; });
+  var ordered = fifa.concat(rest);
+
+  var rows = ordered.map(function(c, i){
+    function esc(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
+    return '  {id:'+(i+1)+',name:"'+esc(c.name)+'",cat:"'+esc(c.cat)+'",logo:"'+esc(c.logo)+'",url:"'+esc(c.url)+'",fifa:'+(c.fifa?'true':'false')+'}';
   });
-  return 'const CHANNELS = [\n'+rows.join(',\n')+'\n];';
+
+  var code = 'const CHANNELS = [\n' + rows.join(',\n') + '\n];';
+
+  // Add FIFA banner comment if changed
+  if(siteSettings.fifaTitle || siteSettings.fifaSubtitle){
+    code += '\n\n// FIFA Banner: ' + (siteSettings.fifaTitle || '') + ' | ' + (siteSettings.fifaSubtitle || '');
+  }
+  return code;
 }
 
 function doExport(){
-  document.getElementById('ex-code').value=buildCode();
-  showOv('ov-ex');
+  document.getElementById('ex-code').value = buildChannelsCode();
+  openModal('ov-export');
 }
 
-function copyCode(){
-  var el=document.getElementById('ex-code');
+function copyExportCode(){
+  var el = document.getElementById('ex-code');
   navigator.clipboard.writeText(el.value)
-    .then(function(){toast('✅ কোড কপি হয়েছে!');})
-    .catch(function(){el.select();document.execCommand('copy');toast('✅ কপি হয়েছে!');});
+    .then(function(){ showToast('✅ কোড কপি হয়েছে!', 'success'); })
+    .catch(function(){ el.select(); document.execCommand('copy'); showToast('✅ কপি হয়েছে!', 'success'); });
 }
 
 function dlJSON(){
-  var data=CH.map(function(c){return {name:c.name,category:c.cat,url:c.url,logo:c.logo,fifa:c.fifa};});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-  a.download='channels.json';a.click();
-  toast('⬇️ ডাউনলোড হচ্ছে');
+  var data = CH.map(function(c){
+    return {name: c.name, category: c.cat, url: c.url, logo: c.logo, fifa: c.fifa};
+  });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
+  a.download = 'channels.json'; a.click();
+  showToast('⬇️ ডাউনলোড শুরু হচ্ছে...', 'info');
 }
 
-function showOv(id){document.getElementById(id).classList.add('show');}
-function hideOv(id){document.getElementById(id).classList.remove('show');}
+// ══ MODAL ══
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 
-var _t;
-function toast(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(_t);_t=setTimeout(function(){el.classList.remove('show');},2500);
+// Close on backdrop click
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('overlay')){
+    e.target.classList.remove('open');
+  }
+});
+
+// ══ TOAST ══
+var toastTimer;
+function showToast(msg, type){
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2800);
 }
 
 // ══ BOOT ══
 (function(){
-  if(sessionStorage.getItem('bf_sess')==='1'){
-    showAdmin();
+  if(sessionStorage.getItem('bf_sess') === '1'){
+    showAdminPanel();
   }
   tickLock();
+  // Enter key on login
+  document.getElementById('lu').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') document.getElementById('lp').focus();
+  });
+  document.getElementById('lp').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') doLogin();
+  });
 })();
 </script>
 </body>
